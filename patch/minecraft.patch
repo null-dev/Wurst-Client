@@ -1,10 +1,9 @@
-From 9bea66f6d76e8cd6251a011c07a7c689dcf06ced Mon Sep 17 00:00:00 2001
-From: Alexander01998 <contact.wurstimperium@gmail.com>
-Date: Sun, 6 Mar 2016 21:17:07 +0100
+From bbf17ed5059a814f873f20d0aa5316b353fd72b8 Mon Sep 17 00:00:00 2001
+From: nulldev <contactnulldev@gmail.com>
+Date: Fri, 25 Mar 2016 16:51:51 -0400
 Subject: [PATCH] Wurst
 
 ---
- .gitignore                                         |   1 +
  src/net/minecraft/block/Block.java                 |  31 +-
  src/net/minecraft/block/BlockBeacon.java           |   4 +-
  src/net/minecraft/block/BlockBed.java              |   4 +-
@@ -36,7 +35,7 @@ Subject: [PATCH] Wurst
  src/net/minecraft/client/gui/GuiFlatPresets.java   |   6 +-
  src/net/minecraft/client/gui/GuiGameOver.java      |  11 +-
  src/net/minecraft/client/gui/GuiIngame.java        |  51 +--
- src/net/minecraft/client/gui/GuiIngameMenu.java    |  49 ++-
+ src/net/minecraft/client/gui/GuiIngameMenu.java    |  55 ++-
  .../minecraft/client/gui/GuiKeyBindingList.java    |   3 +
  src/net/minecraft/client/gui/GuiLanguage.java      |   3 +
  src/net/minecraft/client/gui/GuiListButton.java    |   1 +
@@ -83,7 +82,7 @@ Subject: [PATCH] Wurst
  .../client/gui/achievement/GuiAchievements.java    |   6 +-
  .../minecraft/client/gui/achievement/GuiStats.java |   9 +-
  .../minecraft/client/gui/inventory/GuiBeacon.java  |   3 +
- .../minecraft/client/gui/inventory/GuiChest.java   | 118 +++++-
+ .../minecraft/client/gui/inventory/GuiChest.java   | 122 ++++++-
  .../client/gui/inventory/GuiContainer.java         |  42 +--
  .../client/gui/inventory/GuiContainerCreative.java |   9 +-
  .../client/gui/inventory/GuiEditSign.java          |  32 ++
@@ -119,11 +118,9 @@ Subject: [PATCH] Wurst
  .../minecraft/client/renderer/ItemModelMesher.java |  15 +-
  .../minecraft/client/renderer/ItemRenderer.java    |   2 +-
  .../minecraft/client/renderer/RenderGlobal.java    |  48 ++-
- src/net/minecraft/client/renderer/Tessellator.java |   0
  .../client/renderer/ThreadDownloadImageData.java   |   8 +-
  .../minecraft/client/renderer/WorldRenderer.java   |  80 ++---
  .../client/renderer/chunk/ChunkRenderWorker.java   |   3 +
- .../client/renderer/chunk/RenderChunk.java         |   0
  .../minecraft/client/renderer/chunk/VisGraph.java  |   4 +-
  .../minecraft/client/renderer/entity/Render.java   |  57 ++-
  .../client/renderer/entity/RenderDragon.java       |   4 +-
@@ -232,20 +229,10 @@ Subject: [PATCH] Wurst
  .../minecraft/world/gen/ChunkProviderServer.java   |   3 +
  src/net/minecraft/world/gen/layer/GenLayer.java    |   1 +
  .../world/gen/structure/MapGenStructure.java       |   2 +
- 228 files changed, 2618 insertions(+), 1168 deletions(-)
+ 225 files changed, 2627 insertions(+), 1168 deletions(-)
 
-diff --git a/.gitignore b/.gitignore
-index eba4a99..aad12bb 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -1,4 +1,5 @@
- /bin
- /.settings
-+/tmp
- .classpath
- .project
 diff --git a/src/net/minecraft/block/Block.java b/src/net/minecraft/block/Block.java
-index 5c07aa4..47bb6ff 100644
+index d8fe39f..47bb6ff 100644
 --- a/src/net/minecraft/block/Block.java
 +++ b/src/net/minecraft/block/Block.java
 @@ -3,6 +3,7 @@ package net.minecraft.block;
@@ -318,7 +305,7 @@ index 5c07aa4..47bb6ff 100644
      }
  
 diff --git a/src/net/minecraft/block/BlockBeacon.java b/src/net/minecraft/block/BlockBeacon.java
-index a6564df..0ff1405 100644
+index 1b3e786..0ff1405 100644
 --- a/src/net/minecraft/block/BlockBeacon.java
 +++ b/src/net/minecraft/block/BlockBeacon.java
 @@ -113,9 +113,11 @@ public class BlockBeacon extends BlockContainer
@@ -335,7 +322,7 @@ index a6564df..0ff1405 100644
                      if (!var1.canSeeSky(var3))
                      {
 diff --git a/src/net/minecraft/block/BlockBed.java b/src/net/minecraft/block/BlockBed.java
-index 7ebd875..ca3a456 100644
+index 2aa01cc..ca3a456 100644
 --- a/src/net/minecraft/block/BlockBed.java
 +++ b/src/net/minecraft/block/BlockBed.java
 @@ -195,11 +195,13 @@ public class BlockBed extends BlockDirectional
@@ -354,7 +341,7 @@ index 7ebd875..ca3a456 100644
                      if (func_176469_d(worldIn, var14))
                      {
 diff --git a/src/net/minecraft/block/BlockCactus.java b/src/net/minecraft/block/BlockCactus.java
-index 5c000b0..5cc96b1 100644
+index fbdcfb5..5cc96b1 100644
 --- a/src/net/minecraft/block/BlockCactus.java
 +++ b/src/net/minecraft/block/BlockCactus.java
 @@ -2,6 +2,7 @@ package net.minecraft.block;
@@ -387,7 +374,7 @@ index 5c000b0..5cc96b1 100644
      }
  
 diff --git a/src/net/minecraft/block/BlockLiquid.java b/src/net/minecraft/block/BlockLiquid.java
-index 4689151..5987289 100644
+index be12b92..5987289 100644
 --- a/src/net/minecraft/block/BlockLiquid.java
 +++ b/src/net/minecraft/block/BlockLiquid.java
 @@ -2,6 +2,7 @@ package net.minecraft.block;
@@ -445,7 +432,7 @@ index 4689151..5987289 100644
  
      /**
 diff --git a/src/net/minecraft/block/BlockSlab.java b/src/net/minecraft/block/BlockSlab.java
-index 0c52e06..e68868e 100644
+index 5f3a260..e68868e 100644
 --- a/src/net/minecraft/block/BlockSlab.java
 +++ b/src/net/minecraft/block/BlockSlab.java
 @@ -2,6 +2,7 @@ package net.minecraft.block;
@@ -477,7 +464,7 @@ index 0c52e06..e68868e 100644
  
      public boolean shouldSideBeRendered(IBlockAccess worldIn, BlockPos pos, EnumFacing side)
 diff --git a/src/net/minecraft/block/BlockSoulSand.java b/src/net/minecraft/block/BlockSoulSand.java
-index 6520f1d..7a08741 100644
+index 973d27c..7a08741 100644
 --- a/src/net/minecraft/block/BlockSoulSand.java
 +++ b/src/net/minecraft/block/BlockSoulSand.java
 @@ -1,5 +1,7 @@
@@ -500,7 +487,7 @@ index 6520f1d..7a08741 100644
          entityIn.motionZ *= 0.4D;
      }
 diff --git a/src/net/minecraft/client/LoadingScreenRenderer.java b/src/net/minecraft/client/LoadingScreenRenderer.java
-index 555f15e..d98e274 100644
+index 0875566..d98e274 100644
 --- a/src/net/minecraft/client/LoadingScreenRenderer.java
 +++ b/src/net/minecraft/client/LoadingScreenRenderer.java
 @@ -160,7 +160,7 @@ public class LoadingScreenRenderer implements IProgressUpdate
@@ -539,7 +526,7 @@ index 555f15e..d98e274 100644
  
                  if (OpenGlHelper.isFramebufferEnabled())
 diff --git a/src/net/minecraft/client/Minecraft.java b/src/net/minecraft/client/Minecraft.java
-index f503b64..5f25e78 100644
+index a9a0567..5f25e78 100644
 --- a/src/net/minecraft/client/Minecraft.java
 +++ b/src/net/minecraft/client/Minecraft.java
 @@ -1,60 +1,44 @@
@@ -1300,7 +1287,7 @@ index f503b64..5f25e78 100644
                  {
                      return;
 diff --git a/src/net/minecraft/client/audio/SoundManager.java b/src/net/minecraft/client/audio/SoundManager.java
-index 9397e9d..4bd9472 100644
+index 387c172..4bd9472 100644
 --- a/src/net/minecraft/client/audio/SoundManager.java
 +++ b/src/net/minecraft/client/audio/SoundManager.java
 @@ -6,7 +6,9 @@ import com.google.common.collect.HashMultimap;
@@ -1350,7 +1337,7 @@ index 9397e9d..4bd9472 100644
              try
              {
 diff --git a/src/net/minecraft/client/entity/AbstractClientPlayer.java b/src/net/minecraft/client/entity/AbstractClientPlayer.java
-index de9ca57..042182a 100644
+index a073d5e..042182a 100644
 --- a/src/net/minecraft/client/entity/AbstractClientPlayer.java
 +++ b/src/net/minecraft/client/entity/AbstractClientPlayer.java
 @@ -1,7 +1,7 @@
@@ -1417,7 +1404,7 @@ index de9ca57..042182a 100644
  
      public float func_175156_o()
 diff --git a/src/net/minecraft/client/entity/EntityPlayerSP.java b/src/net/minecraft/client/entity/EntityPlayerSP.java
-index eefe303..132854d 100644
+index 58f696b..132854d 100644
 --- a/src/net/minecraft/client/entity/EntityPlayerSP.java
 +++ b/src/net/minecraft/client/entity/EntityPlayerSP.java
 @@ -1,5 +1,6 @@
@@ -1663,7 +1650,7 @@ index eefe303..132854d 100644
              this.movementInput.moveStrafe *= 0.2F;
              this.movementInput.moveForward *= 0.2F;
 diff --git a/src/net/minecraft/client/gui/FontRenderer.java b/src/net/minecraft/client/gui/FontRenderer.java
-index 2d4215d..b1b08be 100644
+index de97013..b1b08be 100644
 --- a/src/net/minecraft/client/gui/FontRenderer.java
 +++ b/src/net/minecraft/client/gui/FontRenderer.java
 @@ -1,8 +1,5 @@
@@ -1758,7 +1745,7 @@ index 2d4215d..b1b08be 100644
          this.resetStyles();
          int var6;
 diff --git a/src/net/minecraft/client/gui/Gui.java b/src/net/minecraft/client/gui/Gui.java
-index b829f4c..8172ae9 100644
+index 1d08d85..8172ae9 100644
 --- a/src/net/minecraft/client/gui/Gui.java
 +++ b/src/net/minecraft/client/gui/Gui.java
 @@ -107,10 +107,10 @@ public class Gui
@@ -1793,7 +1780,7 @@ index b829f4c..8172ae9 100644
  
      /**
 diff --git a/src/net/minecraft/client/gui/GuiButton.java b/src/net/minecraft/client/gui/GuiButton.java
-index e7f6171..3eeba52 100644
+index 3eddab4..3eeba52 100644
 --- a/src/net/minecraft/client/gui/GuiButton.java
 +++ b/src/net/minecraft/client/gui/GuiButton.java
 @@ -3,6 +3,8 @@ package net.minecraft.client.gui;
@@ -1970,7 +1957,7 @@ index e7f6171..3eeba52 100644
      }
  }
 diff --git a/src/net/minecraft/client/gui/GuiButtonLanguage.java b/src/net/minecraft/client/gui/GuiButtonLanguage.java
-index 3ac6cf9..7f10253 100644
+index dc57327..7f10253 100644
 --- a/src/net/minecraft/client/gui/GuiButtonLanguage.java
 +++ b/src/net/minecraft/client/gui/GuiButtonLanguage.java
 @@ -1,6 +1,7 @@
@@ -1982,7 +1969,7 @@ index 3ac6cf9..7f10253 100644
  
  public class GuiButtonLanguage extends GuiButton
 diff --git a/src/net/minecraft/client/gui/GuiButtonRealmsProxy.java b/src/net/minecraft/client/gui/GuiButtonRealmsProxy.java
-index 4f79373..8c1bbf7 100644
+index c33fc60..8c1bbf7 100644
 --- a/src/net/minecraft/client/gui/GuiButtonRealmsProxy.java
 +++ b/src/net/minecraft/client/gui/GuiButtonRealmsProxy.java
 @@ -1,6 +1,7 @@
@@ -1994,7 +1981,7 @@ index 4f79373..8c1bbf7 100644
  
  public class GuiButtonRealmsProxy extends GuiButton
 diff --git a/src/net/minecraft/client/gui/GuiChat.java b/src/net/minecraft/client/gui/GuiChat.java
-index 7aeb91d..cf9de59 100644
+index 87cf047..cf9de59 100644
 --- a/src/net/minecraft/client/gui/GuiChat.java
 +++ b/src/net/minecraft/client/gui/GuiChat.java
 @@ -255,7 +255,7 @@ public class GuiChat extends GuiScreen
@@ -2007,7 +1994,7 @@ index 7aeb91d..cf9de59 100644
  
              this.mc.thePlayer.sendQueue.addToSendQueue(new C14PacketTabComplete(p_146405_1_, var3));
 diff --git a/src/net/minecraft/client/gui/GuiCommandBlock.java b/src/net/minecraft/client/gui/GuiCommandBlock.java
-index a0c36ff..be13127 100644
+index 5fa383c..be13127 100644
 --- a/src/net/minecraft/client/gui/GuiCommandBlock.java
 +++ b/src/net/minecraft/client/gui/GuiCommandBlock.java
 @@ -1,12 +1,16 @@
@@ -2028,7 +2015,7 @@ index a0c36ff..be13127 100644
  import org.apache.logging.log4j.Logger;
  import org.lwjgl.input.Keyboard;
 diff --git a/src/net/minecraft/client/gui/GuiConfirmOpenLink.java b/src/net/minecraft/client/gui/GuiConfirmOpenLink.java
-index 0f730f3..bd417c3 100644
+index badeb48..bd417c3 100644
 --- a/src/net/minecraft/client/gui/GuiConfirmOpenLink.java
 +++ b/src/net/minecraft/client/gui/GuiConfirmOpenLink.java
 @@ -1,6 +1,8 @@
@@ -2041,7 +2028,7 @@ index 0f730f3..bd417c3 100644
  
  public class GuiConfirmOpenLink extends GuiYesNo
 diff --git a/src/net/minecraft/client/gui/GuiControls.java b/src/net/minecraft/client/gui/GuiControls.java
-index 0c3a8d7..9a61dc0 100644
+index 2372539..9a61dc0 100644
 --- a/src/net/minecraft/client/gui/GuiControls.java
 +++ b/src/net/minecraft/client/gui/GuiControls.java
 @@ -1,7 +1,9 @@
@@ -2055,7 +2042,7 @@ index 0c3a8d7..9a61dc0 100644
  import net.minecraft.client.settings.GameSettings;
  import net.minecraft.client.settings.KeyBinding;
 diff --git a/src/net/minecraft/client/gui/GuiCreateFlatWorld.java b/src/net/minecraft/client/gui/GuiCreateFlatWorld.java
-index 73bddda..d22fcfe 100644
+index 0a72c4c..d22fcfe 100644
 --- a/src/net/minecraft/client/gui/GuiCreateFlatWorld.java
 +++ b/src/net/minecraft/client/gui/GuiCreateFlatWorld.java
 @@ -1,8 +1,10 @@
@@ -2079,7 +2066,7 @@ index 73bddda..d22fcfe 100644
              }
  
 diff --git a/src/net/minecraft/client/gui/GuiCreateWorld.java b/src/net/minecraft/client/gui/GuiCreateWorld.java
-index 276d99b..9f6238e 100644
+index 9c4b538..9f6238e 100644
 --- a/src/net/minecraft/client/gui/GuiCreateWorld.java
 +++ b/src/net/minecraft/client/gui/GuiCreateWorld.java
 @@ -2,12 +2,15 @@ package net.minecraft.client.gui;
@@ -2116,7 +2103,7 @@ index 276d99b..9f6238e 100644
  
                  if (!StringUtils.isEmpty(var4))
 diff --git a/src/net/minecraft/client/gui/GuiCustomizeSkin.java b/src/net/minecraft/client/gui/GuiCustomizeSkin.java
-index 4f7b75d..f7d93a3 100644
+index aa1e89e..f7d93a3 100644
 --- a/src/net/minecraft/client/gui/GuiCustomizeSkin.java
 +++ b/src/net/minecraft/client/gui/GuiCustomizeSkin.java
 @@ -1,6 +1,8 @@
@@ -2129,7 +2116,7 @@ index 4f7b75d..f7d93a3 100644
  import net.minecraft.entity.player.EnumPlayerModelParts;
  
 diff --git a/src/net/minecraft/client/gui/GuiCustomizeWorldScreen.java b/src/net/minecraft/client/gui/GuiCustomizeWorldScreen.java
-index 94b72e0..bd1c205 100644
+index b98bb52..bd1c205 100644
 --- a/src/net/minecraft/client/gui/GuiCustomizeWorldScreen.java
 +++ b/src/net/minecraft/client/gui/GuiCustomizeWorldScreen.java
 @@ -2,8 +2,11 @@ package net.minecraft.client.gui;
@@ -2154,7 +2141,7 @@ index 94b72e0..bd1c205 100644
              var7.addVertexWithUV((double)(this.width / 2 + 90), 185.0D, 0.0D, 5.625D, 2.65625D);
              var7.addVertexWithUV((double)(this.width / 2 + 90), 100.0D, 0.0D, 5.625D, 0.0D);
 diff --git a/src/net/minecraft/client/gui/GuiDisconnected.java b/src/net/minecraft/client/gui/GuiDisconnected.java
-index 957deda..1f58fea 100644
+index 54720cc..1f58fea 100644
 --- a/src/net/minecraft/client/gui/GuiDisconnected.java
 +++ b/src/net/minecraft/client/gui/GuiDisconnected.java
 @@ -3,9 +3,17 @@ package net.minecraft.client.gui;
@@ -2280,7 +2267,7 @@ index 957deda..1f58fea 100644
      }
  
 diff --git a/src/net/minecraft/client/gui/GuiEnchantment.java b/src/net/minecraft/client/gui/GuiEnchantment.java
-index f1f80fa..ee893f2 100644
+index 0901488..ee893f2 100644
 --- a/src/net/minecraft/client/gui/GuiEnchantment.java
 +++ b/src/net/minecraft/client/gui/GuiEnchantment.java
 @@ -209,7 +209,7 @@ public class GuiEnchantment extends GuiContainer
@@ -2313,7 +2300,7 @@ index f1f80fa..ee893f2 100644
                      if (this.mc.thePlayer.experienceLevel < var7)
                      {
 diff --git a/src/net/minecraft/client/gui/GuiErrorScreen.java b/src/net/minecraft/client/gui/GuiErrorScreen.java
-index b886d7d..302f199 100644
+index fe5ee48..302f199 100644
 --- a/src/net/minecraft/client/gui/GuiErrorScreen.java
 +++ b/src/net/minecraft/client/gui/GuiErrorScreen.java
 @@ -1,6 +1,8 @@
@@ -2326,7 +2313,7 @@ index b886d7d..302f199 100644
  
  public class GuiErrorScreen extends GuiScreen
 diff --git a/src/net/minecraft/client/gui/GuiFlatPresets.java b/src/net/minecraft/client/gui/GuiFlatPresets.java
-index 47e1373..d898fa2 100644
+index f976539..d898fa2 100644
 --- a/src/net/minecraft/client/gui/GuiFlatPresets.java
 +++ b/src/net/minecraft/client/gui/GuiFlatPresets.java
 @@ -2,11 +2,14 @@ package net.minecraft.client.gui;
@@ -2362,7 +2349,7 @@ index 47e1373..d898fa2 100644
              GlStateManager.disableRescaleNormal();
          }
 diff --git a/src/net/minecraft/client/gui/GuiGameOver.java b/src/net/minecraft/client/gui/GuiGameOver.java
-index c737e46..b53a1b5 100644
+index 2483f94..b53a1b5 100644
 --- a/src/net/minecraft/client/gui/GuiGameOver.java
 +++ b/src/net/minecraft/client/gui/GuiGameOver.java
 @@ -2,10 +2,15 @@ package net.minecraft.client.gui;
@@ -2402,7 +2389,7 @@ index c737e46..b53a1b5 100644
      }
  }
 diff --git a/src/net/minecraft/client/gui/GuiIngame.java b/src/net/minecraft/client/gui/GuiIngame.java
-index 6dbd34d..3358c34 100644
+index 12b2457..3358c34 100644
 --- a/src/net/minecraft/client/gui/GuiIngame.java
 +++ b/src/net/minecraft/client/gui/GuiIngame.java
 @@ -1,13 +1,11 @@
@@ -2565,10 +2552,10 @@ index 6dbd34d..3358c34 100644
              if (var7 > 0.0F)
              {
 diff --git a/src/net/minecraft/client/gui/GuiIngameMenu.java b/src/net/minecraft/client/gui/GuiIngameMenu.java
-index d8f9c4b..e4e2d17 100644
+index 94b6a28..9884c0c 100644
 --- a/src/net/minecraft/client/gui/GuiIngameMenu.java
 +++ b/src/net/minecraft/client/gui/GuiIngameMenu.java
-@@ -1,15 +1,31 @@
+@@ -1,15 +1,33 @@
  package net.minecraft.client.gui;
  
 +import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
@@ -2590,6 +2577,8 @@ index d8f9c4b..e4e2d17 100644
 +
 +import tk.wurst_client.gui.main.GuiWurstMainMenu;
 +import tk.wurst_client.gui.options.GuiWurstOptions;
++
++import tk.wurst_client.mods.RecordingModeMod;
  
  public class GuiIngameMenu extends GuiScreen
  {
@@ -2600,16 +2589,18 @@ index d8f9c4b..e4e2d17 100644
      private static final String __OBFID = "CL_00000703";
  
      /**
-@@ -30,6 +46,8 @@ public class GuiIngameMenu extends GuiScreen
+@@ -30,6 +48,10 @@ public class GuiIngameMenu extends GuiScreen
  
          this.buttonList.add(new GuiButton(4, this.width / 2 - 100, this.height / 4 + 24 + var1, I18n.format("menu.returnToGame", new Object[0])));
          this.buttonList.add(new GuiButton(0, this.width / 2 - 100, this.height / 4 + 96 + var1, 98, 20, I18n.format("menu.options", new Object[0])));
 +        //TODO: Client
-+        this.buttonList.add(new GuiButton(8, this.width / 2 - 100, this.height / 4 + 72 + var1, "            Options"));
++        if(!RecordingModeMod.hideOptionsButton()) {
++            this.buttonList.add(new GuiButton(8, this.width / 2 - 100, this.height / 4 + 72 + var1, "            Options"));
++        }
          GuiButton var3;
          this.buttonList.add(var3 = new GuiButton(7, this.width / 2 + 2, this.height / 4 + 96 + var1, 98, 20, I18n.format("menu.shareToLan", new Object[0])));
          this.buttonList.add(new GuiButton(5, this.width / 2 - 100, this.height / 4 + 48 + var1, 98, 20, I18n.format("gui.achievements", new Object[0])));
-@@ -49,7 +67,7 @@ public class GuiIngameMenu extends GuiScreen
+@@ -49,7 +71,7 @@ public class GuiIngameMenu extends GuiScreen
                  button.enabled = false;
                  this.mc.theWorld.sendQuittingDisconnectingPacket();
                  this.mc.loadWorld((WorldClient)null);
@@ -2618,7 +2609,7 @@ index d8f9c4b..e4e2d17 100644
  
              case 2:
              case 3:
-@@ -71,6 +89,11 @@ public class GuiIngameMenu extends GuiScreen
+@@ -71,6 +93,11 @@ public class GuiIngameMenu extends GuiScreen
  
              case 7:
                  this.mc.displayGuiScreen(new GuiShareToLan(this));
@@ -2630,11 +2621,12 @@ index d8f9c4b..e4e2d17 100644
          }
      }
  
-@@ -91,5 +114,29 @@ public class GuiIngameMenu extends GuiScreen
+@@ -91,5 +118,31 @@ public class GuiIngameMenu extends GuiScreen
          this.drawDefaultBackground();
          this.drawCenteredString(this.fontRendererObj, I18n.format("menu.game", new Object[0]), this.width / 2, 40, 16777215);
          super.drawScreen(mouseX, mouseY, partialTicks);
 +        //TODO: Client
++        if(!RecordingModeMod.hideOptionsButton()) {
 +		glEnable(GL_TEXTURE_2D);
 +		glEnable(GL_CULL_FACE);
 +        GL11.glDisable(GL11.GL_DEPTH_TEST);
@@ -2658,10 +2650,11 @@ index d8f9c4b..e4e2d17 100644
 +        var4.addVertexWithUV((double)x + w, (double)y + 0, (double)this.zLevel, (double)((float)(u1 + fw) * 0.00390625F), (double)((float)(v1 + 0) * 0.00390625F));
 +        var4.addVertexWithUV((double)x + 0, (double)y + 0, (double)this.zLevel, (double)((float)(u1 + 0) * 0.00390625F), (double)((float)(v1 + 0) * 0.00390625F));
 +        var3.draw();
++        }
      }
  }
 diff --git a/src/net/minecraft/client/gui/GuiKeyBindingList.java b/src/net/minecraft/client/gui/GuiKeyBindingList.java
-index 63ce2aa..4097c4d 100644
+index 3f0ee74..4097c4d 100644
 --- a/src/net/minecraft/client/gui/GuiKeyBindingList.java
 +++ b/src/net/minecraft/client/gui/GuiKeyBindingList.java
 @@ -1,11 +1,14 @@
@@ -2680,7 +2673,7 @@ index 63ce2aa..4097c4d 100644
  
  public class GuiKeyBindingList extends GuiListExtended
 diff --git a/src/net/minecraft/client/gui/GuiLanguage.java b/src/net/minecraft/client/gui/GuiLanguage.java
-index 21d8db6..866b405 100644
+index 1a663cc..866b405 100644
 --- a/src/net/minecraft/client/gui/GuiLanguage.java
 +++ b/src/net/minecraft/client/gui/GuiLanguage.java
 @@ -2,10 +2,13 @@ package net.minecraft.client.gui;
@@ -2698,7 +2691,7 @@ index 21d8db6..866b405 100644
  import net.minecraft.client.resources.Language;
  import net.minecraft.client.resources.LanguageManager;
 diff --git a/src/net/minecraft/client/gui/GuiListButton.java b/src/net/minecraft/client/gui/GuiListButton.java
-index ce714c0..7037d3b 100644
+index 86fb8cb..7037d3b 100644
 --- a/src/net/minecraft/client/gui/GuiListButton.java
 +++ b/src/net/minecraft/client/gui/GuiListButton.java
 @@ -1,6 +1,7 @@
@@ -2710,7 +2703,7 @@ index ce714c0..7037d3b 100644
  
  public class GuiListButton extends GuiButton
 diff --git a/src/net/minecraft/client/gui/GuiListExtended.java b/src/net/minecraft/client/gui/GuiListExtended.java
-index 1f23abe..db99de6 100644
+index f1d229f..db99de6 100644
 --- a/src/net/minecraft/client/gui/GuiListExtended.java
 +++ b/src/net/minecraft/client/gui/GuiListExtended.java
 @@ -33,6 +33,10 @@ public abstract class GuiListExtended extends GuiSlot
@@ -2725,7 +2718,7 @@ index 1f23abe..db99de6 100644
      }
  
 diff --git a/src/net/minecraft/client/gui/GuiLockIconButton.java b/src/net/minecraft/client/gui/GuiLockIconButton.java
-index f86264c..e44dc02 100644
+index 7c69b95..e44dc02 100644
 --- a/src/net/minecraft/client/gui/GuiLockIconButton.java
 +++ b/src/net/minecraft/client/gui/GuiLockIconButton.java
 @@ -1,6 +1,7 @@
@@ -2737,7 +2730,7 @@ index f86264c..e44dc02 100644
  
  public class GuiLockIconButton extends GuiButton
 diff --git a/src/net/minecraft/client/gui/GuiMainMenu.java b/src/net/minecraft/client/gui/GuiMainMenu.java
-index 38033d9..e5daf24 100644
+index 9fd9e99..e5daf24 100644
 --- a/src/net/minecraft/client/gui/GuiMainMenu.java
 +++ b/src/net/minecraft/client/gui/GuiMainMenu.java
 @@ -1,15 +1,25 @@
@@ -3073,7 +3066,7 @@ index 38033d9..e5daf24 100644
      }
  
 diff --git a/src/net/minecraft/client/gui/GuiMemoryErrorScreen.java b/src/net/minecraft/client/gui/GuiMemoryErrorScreen.java
-index 0fb898e..e97ec4b 100644
+index b5e6872..e97ec4b 100644
 --- a/src/net/minecraft/client/gui/GuiMemoryErrorScreen.java
 +++ b/src/net/minecraft/client/gui/GuiMemoryErrorScreen.java
 @@ -1,7 +1,9 @@
@@ -3096,7 +3089,7 @@ index 0fb898e..e97ec4b 100644
          else if (button.id == 1)
          {
 diff --git a/src/net/minecraft/client/gui/GuiMerchant.java b/src/net/minecraft/client/gui/GuiMerchant.java
-index 518840e..0550d2e 100644
+index 991708b..0550d2e 100644
 --- a/src/net/minecraft/client/gui/GuiMerchant.java
 +++ b/src/net/minecraft/client/gui/GuiMerchant.java
 @@ -1,8 +1,11 @@
@@ -3129,7 +3122,7 @@ index 518840e..0550d2e 100644
                  this.renderToolTip(var11, mouseX, mouseY);
              }
 diff --git a/src/net/minecraft/client/gui/GuiMultiplayer.java b/src/net/minecraft/client/gui/GuiMultiplayer.java
-index da42542..f1916c2 100644
+index 82619a7..f1916c2 100644
 --- a/src/net/minecraft/client/gui/GuiMultiplayer.java
 +++ b/src/net/minecraft/client/gui/GuiMultiplayer.java
 @@ -1,26 +1,53 @@
@@ -3437,7 +3430,7 @@ index da42542..f1916c2 100644
              this.selectServer(var4);
          }
 diff --git a/src/net/minecraft/client/gui/GuiNewChat.java b/src/net/minecraft/client/gui/GuiNewChat.java
-index 1614678..0ea1042 100644
+index 80dbf2c..0ea1042 100644
 --- a/src/net/minecraft/client/gui/GuiNewChat.java
 +++ b/src/net/minecraft/client/gui/GuiNewChat.java
 @@ -1,17 +1,23 @@
@@ -3552,7 +3545,7 @@ index 1614678..0ea1042 100644
  
      public void refreshChat()
 diff --git a/src/net/minecraft/client/gui/GuiOptionButton.java b/src/net/minecraft/client/gui/GuiOptionButton.java
-index 833c342..c273f56 100644
+index 8ab41c7..c273f56 100644
 --- a/src/net/minecraft/client/gui/GuiOptionButton.java
 +++ b/src/net/minecraft/client/gui/GuiOptionButton.java
 @@ -1,5 +1,6 @@
@@ -3563,7 +3556,7 @@ index 833c342..c273f56 100644
  
  public class GuiOptionButton extends GuiButton
 diff --git a/src/net/minecraft/client/gui/GuiOptionSlider.java b/src/net/minecraft/client/gui/GuiOptionSlider.java
-index 423c7b2..e303065 100644
+index 78b2cf2..e303065 100644
 --- a/src/net/minecraft/client/gui/GuiOptionSlider.java
 +++ b/src/net/minecraft/client/gui/GuiOptionSlider.java
 @@ -1,6 +1,7 @@
@@ -3575,7 +3568,7 @@ index 423c7b2..e303065 100644
  import net.minecraft.client.settings.GameSettings;
  import net.minecraft.util.MathHelper;
 diff --git a/src/net/minecraft/client/gui/GuiOptions.java b/src/net/minecraft/client/gui/GuiOptions.java
-index 2696569..77a440b 100644
+index d4c7835..77a440b 100644
 --- a/src/net/minecraft/client/gui/GuiOptions.java
 +++ b/src/net/minecraft/client/gui/GuiOptions.java
 @@ -1,10 +1,12 @@
@@ -3592,7 +3585,7 @@ index 2696569..77a440b 100644
  import net.minecraft.client.gui.stream.GuiStreamUnavailable;
  import net.minecraft.client.resources.I18n;
 diff --git a/src/net/minecraft/client/gui/GuiOptionsRowList.java b/src/net/minecraft/client/gui/GuiOptionsRowList.java
-index 812b099..d69a453 100644
+index eb3c8db..d69a453 100644
 --- a/src/net/minecraft/client/gui/GuiOptionsRowList.java
 +++ b/src/net/minecraft/client/gui/GuiOptionsRowList.java
 @@ -1,8 +1,11 @@
@@ -3608,7 +3601,7 @@ index 812b099..d69a453 100644
  
  public class GuiOptionsRowList extends GuiListExtended
 diff --git a/src/net/minecraft/client/gui/GuiOverlayDebug.java b/src/net/minecraft/client/gui/GuiOverlayDebug.java
-index 273ee40..0b4ed2d 100644
+index ce8862a..0b4ed2d 100644
 --- a/src/net/minecraft/client/gui/GuiOverlayDebug.java
 +++ b/src/net/minecraft/client/gui/GuiOverlayDebug.java
 @@ -127,7 +127,7 @@ public class GuiOverlayDebug extends Gui
@@ -3645,7 +3638,7 @@ index 273ee40..0b4ed2d 100644
  
                  if (this.mc.theWorld.getWorldType() != WorldType.DEBUG_WORLD)
 diff --git a/src/net/minecraft/client/gui/GuiPageButtonList.java b/src/net/minecraft/client/gui/GuiPageButtonList.java
-index 7f0ae74..221e068 100644
+index 8e601f3..221e068 100644
 --- a/src/net/minecraft/client/gui/GuiPageButtonList.java
 +++ b/src/net/minecraft/client/gui/GuiPageButtonList.java
 @@ -4,8 +4,11 @@ import com.google.common.base.Objects;
@@ -3661,7 +3654,7 @@ index 7f0ae74..221e068 100644
  
  public class GuiPageButtonList extends GuiListExtended
 diff --git a/src/net/minecraft/client/gui/GuiPlayerTabOverlay.java b/src/net/minecraft/client/gui/GuiPlayerTabOverlay.java
-index d09e06f..6728fd1 100644
+index ddc5d3b..6728fd1 100644
 --- a/src/net/minecraft/client/gui/GuiPlayerTabOverlay.java
 +++ b/src/net/minecraft/client/gui/GuiPlayerTabOverlay.java
 @@ -37,9 +37,9 @@ public class GuiPlayerTabOverlay extends Gui
@@ -3784,7 +3777,7 @@ index d09e06f..6728fd1 100644
  
          public int compare(Object p_compare_1_, Object p_compare_2_)
 diff --git a/src/net/minecraft/client/gui/GuiRenameWorld.java b/src/net/minecraft/client/gui/GuiRenameWorld.java
-index 977a564..7e7e929 100644
+index c755d31..7e7e929 100644
 --- a/src/net/minecraft/client/gui/GuiRenameWorld.java
 +++ b/src/net/minecraft/client/gui/GuiRenameWorld.java
 @@ -1,9 +1,12 @@
@@ -3801,7 +3794,7 @@ index 977a564..7e7e929 100644
  
  public class GuiRenameWorld extends GuiScreen
 diff --git a/src/net/minecraft/client/gui/GuiScreen.java b/src/net/minecraft/client/gui/GuiScreen.java
-index 1aa3ab1..51e7d84 100644
+index 6cafae5..51e7d84 100644
 --- a/src/net/minecraft/client/gui/GuiScreen.java
 +++ b/src/net/minecraft/client/gui/GuiScreen.java
 @@ -3,6 +3,7 @@ package net.minecraft.client.gui;
@@ -3865,7 +3858,7 @@ index 1aa3ab1..51e7d84 100644
          var3.addVertexWithUV((double)this.width, (double)this.height, 0.0D, (double)((float)this.width / var4), (double)((float)this.height / var4 + (float)tint));
          var3.addVertexWithUV((double)this.width, 0.0D, 0.0D, (double)((float)this.width / var4), (double)tint);
 diff --git a/src/net/minecraft/client/gui/GuiScreenAddServer.java b/src/net/minecraft/client/gui/GuiScreenAddServer.java
-index 098969d..f032cdc 100644
+index f97ff5a..f032cdc 100644
 --- a/src/net/minecraft/client/gui/GuiScreenAddServer.java
 +++ b/src/net/minecraft/client/gui/GuiScreenAddServer.java
 @@ -1,8 +1,11 @@
@@ -3881,7 +3874,7 @@ index 098969d..f032cdc 100644
  
  public class GuiScreenAddServer extends GuiScreen
 diff --git a/src/net/minecraft/client/gui/GuiScreenBook.java b/src/net/minecraft/client/gui/GuiScreenBook.java
-index 914a882..11ff3f7 100644
+index a8feb74..11ff3f7 100644
 --- a/src/net/minecraft/client/gui/GuiScreenBook.java
 +++ b/src/net/minecraft/client/gui/GuiScreenBook.java
 @@ -2,11 +2,15 @@ package net.minecraft.client.gui;
@@ -4033,7 +4026,7 @@ index 914a882..11ff3f7 100644
      {
          if (this.bookPages != null && this.bookPages.tagCount() < 50)
 diff --git a/src/net/minecraft/client/gui/GuiScreenCustomizePresets.java b/src/net/minecraft/client/gui/GuiScreenCustomizePresets.java
-index 02c79e4..96f2ccd 100644
+index 0bb23a8..96f2ccd 100644
 --- a/src/net/minecraft/client/gui/GuiScreenCustomizePresets.java
 +++ b/src/net/minecraft/client/gui/GuiScreenCustomizePresets.java
 @@ -1,14 +1,18 @@
@@ -4056,7 +4049,7 @@ index 02c79e4..96f2ccd 100644
  
  public class GuiScreenCustomizePresets extends GuiScreen
 diff --git a/src/net/minecraft/client/gui/GuiScreenDemo.java b/src/net/minecraft/client/gui/GuiScreenDemo.java
-index 68db2e7..61a59f3 100644
+index 20ba93a..61a59f3 100644
 --- a/src/net/minecraft/client/gui/GuiScreenDemo.java
 +++ b/src/net/minecraft/client/gui/GuiScreenDemo.java
 @@ -2,10 +2,13 @@ package net.minecraft.client.gui;
@@ -4074,7 +4067,7 @@ index 68db2e7..61a59f3 100644
  import org.apache.logging.log4j.Logger;
  
 diff --git a/src/net/minecraft/client/gui/GuiScreenOptionsSounds.java b/src/net/minecraft/client/gui/GuiScreenOptionsSounds.java
-index fd5022d..286c43b 100644
+index 2fbfed5..286c43b 100644
 --- a/src/net/minecraft/client/gui/GuiScreenOptionsSounds.java
 +++ b/src/net/minecraft/client/gui/GuiScreenOptionsSounds.java
 @@ -1,10 +1,12 @@
@@ -4091,7 +4084,7 @@ index fd5022d..286c43b 100644
  import net.minecraft.client.resources.I18n;
  import net.minecraft.client.settings.GameSettings;
 diff --git a/src/net/minecraft/client/gui/GuiScreenRealmsProxy.java b/src/net/minecraft/client/gui/GuiScreenRealmsProxy.java
-index 61e8488..cf81f61 100644
+index fe9d074..cf81f61 100644
 --- a/src/net/minecraft/client/gui/GuiScreenRealmsProxy.java
 +++ b/src/net/minecraft/client/gui/GuiScreenRealmsProxy.java
 @@ -1,11 +1,14 @@
@@ -4119,7 +4112,7 @@ index 61e8488..cf81f61 100644
  
      public List func_154323_a(String p_154323_1_, int p_154323_2_)
 diff --git a/src/net/minecraft/client/gui/GuiScreenResourcePacks.java b/src/net/minecraft/client/gui/GuiScreenResourcePacks.java
-index 543f122..dbc9bc8 100644
+index b3f689d..dbc9bc8 100644
 --- a/src/net/minecraft/client/gui/GuiScreenResourcePacks.java
 +++ b/src/net/minecraft/client/gui/GuiScreenResourcePacks.java
 @@ -1,6 +1,7 @@
@@ -4147,7 +4140,7 @@ index 543f122..dbc9bc8 100644
  import org.apache.logging.log4j.Logger;
  import org.lwjgl.Sys;
 diff --git a/src/net/minecraft/client/gui/GuiScreenServerList.java b/src/net/minecraft/client/gui/GuiScreenServerList.java
-index 6a95e45..f9bf16f 100644
+index a19f2ec..f9bf16f 100644
 --- a/src/net/minecraft/client/gui/GuiScreenServerList.java
 +++ b/src/net/minecraft/client/gui/GuiScreenServerList.java
 @@ -1,10 +1,16 @@
@@ -4180,7 +4173,7 @@ index 6a95e45..f9bf16f 100644
              }
          }
 diff --git a/src/net/minecraft/client/gui/GuiSelectWorld.java b/src/net/minecraft/client/gui/GuiSelectWorld.java
-index 8fa79c9..d2f3b69 100644
+index ea2c93b..d2f3b69 100644
 --- a/src/net/minecraft/client/gui/GuiSelectWorld.java
 +++ b/src/net/minecraft/client/gui/GuiSelectWorld.java
 @@ -5,8 +5,10 @@ import java.text.DateFormat;
@@ -4217,7 +4210,7 @@ index 8fa79c9..d2f3b69 100644
  
      /**
 diff --git a/src/net/minecraft/client/gui/GuiShareToLan.java b/src/net/minecraft/client/gui/GuiShareToLan.java
-index 9e7abdc..75a052f 100644
+index 888904a..75a052f 100644
 --- a/src/net/minecraft/client/gui/GuiShareToLan.java
 +++ b/src/net/minecraft/client/gui/GuiShareToLan.java
 @@ -1,6 +1,10 @@
@@ -4243,7 +4236,7 @@ index 9e7abdc..75a052f 100644
              else
              {
 diff --git a/src/net/minecraft/client/gui/GuiSimpleScrolledSelectionListProxy.java b/src/net/minecraft/client/gui/GuiSimpleScrolledSelectionListProxy.java
-index 4566817..502836b 100644
+index 2f6c16a..502836b 100644
 --- a/src/net/minecraft/client/gui/GuiSimpleScrolledSelectionListProxy.java
 +++ b/src/net/minecraft/client/gui/GuiSimpleScrolledSelectionListProxy.java
 @@ -128,21 +128,21 @@ public class GuiSimpleScrolledSelectionListProxy extends GuiSlot
@@ -4272,7 +4265,7 @@ index 4566817..502836b 100644
                  var7.addVertexWithUV((double)(var5 - 1), (double)(var13 + var12 - 1), 0.0D, 1.0D, 1.0D);
                  var7.addVertexWithUV((double)(var5 - 1), (double)var13, 0.0D, 1.0D, 0.0D);
 diff --git a/src/net/minecraft/client/gui/GuiSleepMP.java b/src/net/minecraft/client/gui/GuiSleepMP.java
-index 3a117a3..065166e 100644
+index efac2ec..065166e 100644
 --- a/src/net/minecraft/client/gui/GuiSleepMP.java
 +++ b/src/net/minecraft/client/gui/GuiSleepMP.java
 @@ -1,6 +1,8 @@
@@ -4285,7 +4278,7 @@ index 3a117a3..065166e 100644
  import net.minecraft.client.resources.I18n;
  import net.minecraft.network.play.client.C0BPacketEntityAction;
 diff --git a/src/net/minecraft/client/gui/GuiSlider.java b/src/net/minecraft/client/gui/GuiSlider.java
-index 1a0f324..ad05b42 100644
+index 9c97890..ad05b42 100644
 --- a/src/net/minecraft/client/gui/GuiSlider.java
 +++ b/src/net/minecraft/client/gui/GuiSlider.java
 @@ -1,6 +1,7 @@
@@ -4297,7 +4290,7 @@ index 1a0f324..ad05b42 100644
  import net.minecraft.client.resources.I18n;
  
 diff --git a/src/net/minecraft/client/gui/GuiSlot.java b/src/net/minecraft/client/gui/GuiSlot.java
-index 0220892..e0bfdf3 100644
+index f759a78..e0bfdf3 100644
 --- a/src/net/minecraft/client/gui/GuiSlot.java
 +++ b/src/net/minecraft/client/gui/GuiSlot.java
 @@ -1,10 +1,12 @@
@@ -4399,7 +4392,7 @@ index 0220892..e0bfdf3 100644
          var6.addVertexWithUV((double)this.left, (double)p_148136_1_, 0.0D, 0.0D, (double)((float)p_148136_1_ / var7));
          var5.draw();
 diff --git a/src/net/minecraft/client/gui/GuiSnooper.java b/src/net/minecraft/client/gui/GuiSnooper.java
-index 78acac1..be72d96 100644
+index 9b3e996..be72d96 100644
 --- a/src/net/minecraft/client/gui/GuiSnooper.java
 +++ b/src/net/minecraft/client/gui/GuiSnooper.java
 @@ -1,11 +1,14 @@
@@ -4418,7 +4411,7 @@ index 78acac1..be72d96 100644
  import net.minecraft.client.settings.GameSettings;
  
 diff --git a/src/net/minecraft/client/gui/GuiSpectator.java b/src/net/minecraft/client/gui/GuiSpectator.java
-index a925cbe..628bf2c 100644
+index 6bf48ef..628bf2c 100644
 --- a/src/net/minecraft/client/gui/GuiSpectator.java
 +++ b/src/net/minecraft/client/gui/GuiSpectator.java
 @@ -111,7 +111,7 @@ public class GuiSpectator extends Gui implements ISpectatorMenuReciepient
@@ -4440,7 +4433,7 @@ index a925cbe..628bf2c 100644
                  GlStateManager.popMatrix();
              }
 diff --git a/src/net/minecraft/client/gui/GuiTextField.java b/src/net/minecraft/client/gui/GuiTextField.java
-index 04144e8..1df2388 100644
+index 352d4b9..1df2388 100644
 --- a/src/net/minecraft/client/gui/GuiTextField.java
 +++ b/src/net/minecraft/client/gui/GuiTextField.java
 @@ -549,7 +549,7 @@ public class GuiTextField extends Gui
@@ -4471,7 +4464,7 @@ index 04144e8..1df2388 100644
              }
  
 diff --git a/src/net/minecraft/client/gui/GuiVideoSettings.java b/src/net/minecraft/client/gui/GuiVideoSettings.java
-index 5c2d5b1..cda7e01 100644
+index 0ef76a0..cda7e01 100644
 --- a/src/net/minecraft/client/gui/GuiVideoSettings.java
 +++ b/src/net/minecraft/client/gui/GuiVideoSettings.java
 @@ -1,6 +1,8 @@
@@ -4484,7 +4477,7 @@ index 5c2d5b1..cda7e01 100644
  import net.minecraft.client.resources.I18n;
  import net.minecraft.client.settings.GameSettings;
 diff --git a/src/net/minecraft/client/gui/GuiWinGame.java b/src/net/minecraft/client/gui/GuiWinGame.java
-index 28cacd3..39dd86d 100644
+index 41d5838..39dd86d 100644
 --- a/src/net/minecraft/client/gui/GuiWinGame.java
 +++ b/src/net/minecraft/client/gui/GuiWinGame.java
 @@ -131,7 +131,7 @@ public class GuiWinGame extends GuiScreen
@@ -4539,7 +4532,7 @@ index 28cacd3..39dd86d 100644
          int var14 = this.height;
          var5.addVertexWithUV(0.0D, (double)var14, (double)this.zLevel, 0.0D, 1.0D);
 diff --git a/src/net/minecraft/client/gui/GuiYesNo.java b/src/net/minecraft/client/gui/GuiYesNo.java
-index a6aafc7..0554c69 100644
+index b3ca3f4..0554c69 100644
 --- a/src/net/minecraft/client/gui/GuiYesNo.java
 +++ b/src/net/minecraft/client/gui/GuiYesNo.java
 @@ -1,9 +1,12 @@
@@ -4556,7 +4549,7 @@ index a6aafc7..0554c69 100644
  
  public class GuiYesNo extends GuiScreen
 diff --git a/src/net/minecraft/client/gui/ScaledResolution.java b/src/net/minecraft/client/gui/ScaledResolution.java
-index d451b5b..7579cb2 100644
+index fce8057..7579cb2 100644
 --- a/src/net/minecraft/client/gui/ScaledResolution.java
 +++ b/src/net/minecraft/client/gui/ScaledResolution.java
 @@ -22,7 +22,7 @@ public class ScaledResolution
@@ -4569,7 +4562,7 @@ index d451b5b..7579cb2 100644
  
          while (this.scaleFactor < var5 && this.scaledWidth / (this.scaleFactor + 1) >= 320 && this.scaledHeight / (this.scaleFactor + 1) >= 240)
 diff --git a/src/net/minecraft/client/gui/ScreenChatOptions.java b/src/net/minecraft/client/gui/ScreenChatOptions.java
-index 711f2dc..8f917c9 100644
+index d9c65da..8f917c9 100644
 --- a/src/net/minecraft/client/gui/ScreenChatOptions.java
 +++ b/src/net/minecraft/client/gui/ScreenChatOptions.java
 @@ -1,6 +1,8 @@
@@ -4582,7 +4575,7 @@ index 711f2dc..8f917c9 100644
  import net.minecraft.client.settings.GameSettings;
  
 diff --git a/src/net/minecraft/client/gui/ServerListEntryNormal.java b/src/net/minecraft/client/gui/ServerListEntryNormal.java
-index f8402bf..8c8bd38 100644
+index 71f1e82..8c8bd38 100644
 --- a/src/net/minecraft/client/gui/ServerListEntryNormal.java
 +++ b/src/net/minecraft/client/gui/ServerListEntryNormal.java
 @@ -37,7 +37,7 @@ public class ServerListEntryNormal implements GuiListExtended.IGuiListEntry
@@ -4610,7 +4603,7 @@ index f8402bf..8c8bd38 100644
          this.field_148300_d.fontRendererObj.drawString(var23, x + listWidth - var14 - 15 - 2, y + 1, 8421504);
          byte var15 = 0;
 diff --git a/src/net/minecraft/client/gui/ServerSelectionList.java b/src/net/minecraft/client/gui/ServerSelectionList.java
-index 86db79f..254648c 100644
+index 2bcde73..254648c 100644
 --- a/src/net/minecraft/client/gui/ServerSelectionList.java
 +++ b/src/net/minecraft/client/gui/ServerSelectionList.java
 @@ -13,7 +13,7 @@ public class ServerSelectionList extends GuiListExtended
@@ -4652,7 +4645,7 @@ index 86db79f..254648c 100644
  
      public void func_148195_a(ServerList p_148195_1_)
 diff --git a/src/net/minecraft/client/gui/achievement/GuiAchievements.java b/src/net/minecraft/client/gui/achievement/GuiAchievements.java
-index 7b40c1c..dc6189e 100644
+index 6109f96..dc6189e 100644
 --- a/src/net/minecraft/client/gui/achievement/GuiAchievements.java
 +++ b/src/net/minecraft/client/gui/achievement/GuiAchievements.java
 @@ -2,6 +2,7 @@ package net.minecraft.client.gui.achievement;
@@ -4690,7 +4683,7 @@ index 7b40c1c..dc6189e 100644
          }
  
 diff --git a/src/net/minecraft/client/gui/achievement/GuiStats.java b/src/net/minecraft/client/gui/achievement/GuiStats.java
-index 8b2fcfb..f0be0f5 100644
+index 74a0030..f0be0f5 100644
 --- a/src/net/minecraft/client/gui/achievement/GuiStats.java
 +++ b/src/net/minecraft/client/gui/achievement/GuiStats.java
 @@ -1,11 +1,13 @@
@@ -4743,7 +4736,7 @@ index 8b2fcfb..f0be0f5 100644
              }
          }
 diff --git a/src/net/minecraft/client/gui/inventory/GuiBeacon.java b/src/net/minecraft/client/gui/inventory/GuiBeacon.java
-index ba125d8..e681e0a 100644
+index 3dc2b1e..e681e0a 100644
 --- a/src/net/minecraft/client/gui/inventory/GuiBeacon.java
 +++ b/src/net/minecraft/client/gui/inventory/GuiBeacon.java
 @@ -1,8 +1,10 @@
@@ -4766,10 +4759,10 @@ index ba125d8..e681e0a 100644
  import org.apache.logging.log4j.Logger;
  
 diff --git a/src/net/minecraft/client/gui/inventory/GuiChest.java b/src/net/minecraft/client/gui/inventory/GuiChest.java
-index 93156ec..c1acb92 100644
+index 15a710a..43c3ccc 100644
 --- a/src/net/minecraft/client/gui/inventory/GuiChest.java
 +++ b/src/net/minecraft/client/gui/inventory/GuiChest.java
-@@ -1,54 +1,142 @@
+@@ -1,54 +1,146 @@
  package net.minecraft.client.gui.inventory;
  
  import net.minecraft.client.Minecraft;
@@ -4783,6 +4776,8 @@ index 93156ec..c1acb92 100644
 +import tk.wurst_client.WurstClient;
 +import tk.wurst_client.mods.AutoStealMod;
 +import tk.wurst_client.mods.YesCheatMod;
++
++import tk.wurst_client.mods.RecordingModeMod;
  
  public class GuiChest extends GuiContainer
  {
@@ -4821,12 +4816,14 @@ index 93156ec..c1acb92 100644
 +	public void initGui()
 +	{
 +		super.initGui();
++                if(!RecordingModeMod.hideStealStoreButtons()) {
 +		buttonList.add(new GuiButton(0, guiLeft + xSize - 108, guiTop + 4, 50,
 +			12, "Steal"));
 +		buttonList.add(new GuiButton(1, guiLeft + xSize - 56, guiTop + 4, 50,
 +			12, "Store"));
 +		if(WurstClient.INSTANCE.mods.autoStealMod.isActive())
 +			actionPerformed((GuiButton)buttonList.get(0));
++                }
 +	}
 +
 +	// TODO: Client
@@ -4928,7 +4925,7 @@ index 93156ec..c1acb92 100644
      }
  }
 diff --git a/src/net/minecraft/client/gui/inventory/GuiContainer.java b/src/net/minecraft/client/gui/inventory/GuiContainer.java
-index 07acadb..ef19d39 100644
+index b87feb0..ef19d39 100644
 --- a/src/net/minecraft/client/gui/inventory/GuiContainer.java
 +++ b/src/net/minecraft/client/gui/inventory/GuiContainer.java
 @@ -185,7 +185,7 @@ public abstract class GuiContainer extends GuiScreen
@@ -5029,7 +5026,7 @@ index 07acadb..ef19d39 100644
  
          this.itemRender.zLevel = 0.0F;
 diff --git a/src/net/minecraft/client/gui/inventory/GuiContainerCreative.java b/src/net/minecraft/client/gui/inventory/GuiContainerCreative.java
-index 3ba9565..4341662 100644
+index c538022..4341662 100644
 --- a/src/net/minecraft/client/gui/inventory/GuiContainerCreative.java
 +++ b/src/net/minecraft/client/gui/inventory/GuiContainerCreative.java
 @@ -1,10 +1,12 @@
@@ -5075,7 +5072,7 @@ index 3ba9565..4341662 100644
  
          public ItemStack decrStackSize(int p_75209_1_)
 diff --git a/src/net/minecraft/client/gui/inventory/GuiEditSign.java b/src/net/minecraft/client/gui/inventory/GuiEditSign.java
-index 21ea6e9..631b34d 100644
+index c3c8bf5..631b34d 100644
 --- a/src/net/minecraft/client/gui/inventory/GuiEditSign.java
 +++ b/src/net/minecraft/client/gui/inventory/GuiEditSign.java
 @@ -1,6 +1,7 @@
@@ -5153,7 +5150,7 @@ index 21ea6e9..631b34d 100644
                  this.mc.displayGuiScreen((GuiScreen)null);
              }
 diff --git a/src/net/minecraft/client/gui/inventory/GuiInventory.java b/src/net/minecraft/client/gui/inventory/GuiInventory.java
-index b39e3fe..8097e57 100644
+index b7fd1a3..8097e57 100644
 --- a/src/net/minecraft/client/gui/inventory/GuiInventory.java
 +++ b/src/net/minecraft/client/gui/inventory/GuiInventory.java
 @@ -1,6 +1,7 @@
@@ -5165,7 +5162,7 @@ index b39e3fe..8097e57 100644
  import net.minecraft.client.gui.GuiButton;
  import net.minecraft.client.gui.achievement.GuiAchievements;
 diff --git a/src/net/minecraft/client/gui/spectator/categories/TeleportToPlayer.java b/src/net/minecraft/client/gui/spectator/categories/TeleportToPlayer.java
-index a2a9b30..7e0c3f6 100644
+index d0fef46..7e0c3f6 100644
 --- a/src/net/minecraft/client/gui/spectator/categories/TeleportToPlayer.java
 +++ b/src/net/minecraft/client/gui/spectator/categories/TeleportToPlayer.java
 @@ -26,7 +26,7 @@ public class TeleportToPlayer implements ISpectatorMenuView, ISpectatorMenuObjec
@@ -5196,7 +5193,7 @@ index a2a9b30..7e0c3f6 100644
          }
      }
 diff --git a/src/net/minecraft/client/gui/spectator/categories/TeleportToTeam.java b/src/net/minecraft/client/gui/spectator/categories/TeleportToTeam.java
-index 680b12c..933a009 100644
+index fc85067..933a009 100644
 --- a/src/net/minecraft/client/gui/spectator/categories/TeleportToTeam.java
 +++ b/src/net/minecraft/client/gui/spectator/categories/TeleportToTeam.java
 @@ -109,13 +109,13 @@ public class TeleportToTeam implements ISpectatorMenuView, ISpectatorMenuObject
@@ -5216,7 +5213,7 @@ index 680b12c..933a009 100644
          }
  
 diff --git a/src/net/minecraft/client/gui/stream/GuiIngestServers.java b/src/net/minecraft/client/gui/stream/GuiIngestServers.java
-index 59d0d1f..e625f7a 100644
+index 1118b25..e625f7a 100644
 --- a/src/net/minecraft/client/gui/stream/GuiIngestServers.java
 +++ b/src/net/minecraft/client/gui/stream/GuiIngestServers.java
 @@ -1,6 +1,7 @@
@@ -5228,7 +5225,7 @@ index 59d0d1f..e625f7a 100644
  import net.minecraft.client.gui.GuiButton;
  import net.minecraft.client.gui.GuiScreen;
 diff --git a/src/net/minecraft/client/gui/stream/GuiStreamOptions.java b/src/net/minecraft/client/gui/stream/GuiStreamOptions.java
-index 94ad401..995dd75 100644
+index ee2a030..995dd75 100644
 --- a/src/net/minecraft/client/gui/stream/GuiStreamOptions.java
 +++ b/src/net/minecraft/client/gui/stream/GuiStreamOptions.java
 @@ -1,6 +1,7 @@
@@ -5240,7 +5237,7 @@ index 94ad401..995dd75 100644
  import net.minecraft.client.gui.GuiOptionButton;
  import net.minecraft.client.gui.GuiOptionSlider;
 diff --git a/src/net/minecraft/client/gui/stream/GuiStreamUnavailable.java b/src/net/minecraft/client/gui/stream/GuiStreamUnavailable.java
-index 1b29f2e..ae3abbd 100644
+index e97558c..ae3abbd 100644
 --- a/src/net/minecraft/client/gui/stream/GuiStreamUnavailable.java
 +++ b/src/net/minecraft/client/gui/stream/GuiStreamUnavailable.java
 @@ -1,12 +1,14 @@
@@ -5272,7 +5269,7 @@ index 1b29f2e..ae3abbd 100644
  
  public class GuiStreamUnavailable extends GuiScreen
 diff --git a/src/net/minecraft/client/gui/stream/GuiTwitchUserMode.java b/src/net/minecraft/client/gui/stream/GuiTwitchUserMode.java
-index 9af11d4..42b1b45 100644
+index 27c8769..42b1b45 100644
 --- a/src/net/minecraft/client/gui/stream/GuiTwitchUserMode.java
 +++ b/src/net/minecraft/client/gui/stream/GuiTwitchUserMode.java
 @@ -1,11 +1,13 @@
@@ -5290,7 +5287,7 @@ index 9af11d4..42b1b45 100644
  import net.minecraft.client.gui.GuiScreen;
  import net.minecraft.client.resources.I18n;
 diff --git a/src/net/minecraft/client/main/Main.java b/src/net/minecraft/client/main/Main.java
-index 591ccdf..53a1b0d 100644
+index 217fd14..53a1b0d 100644
 --- a/src/net/minecraft/client/main/Main.java
 +++ b/src/net/minecraft/client/main/Main.java
 @@ -1,8 +1,5 @@
@@ -5341,7 +5338,7 @@ index 591ccdf..53a1b0d 100644
          OptionParser var1 = new OptionParser();
          var1.allowsUnrecognizedOptions();
 diff --git a/src/net/minecraft/client/multiplayer/GuiConnecting.java b/src/net/minecraft/client/multiplayer/GuiConnecting.java
-index ee9ae67..81c53e6 100644
+index 1aa77b6..81c53e6 100644
 --- a/src/net/minecraft/client/multiplayer/GuiConnecting.java
 +++ b/src/net/minecraft/client/multiplayer/GuiConnecting.java
 @@ -4,6 +4,7 @@ import java.io.IOException;
@@ -5361,7 +5358,7 @@ index ee9ae67..81c53e6 100644
  import org.apache.logging.log4j.Logger;
  
 diff --git a/src/net/minecraft/client/multiplayer/PlayerControllerMP.java b/src/net/minecraft/client/multiplayer/PlayerControllerMP.java
-index 1c4d5a3..05c8ab5 100644
+index ca6ffd5..05c8ab5 100644
 --- a/src/net/minecraft/client/multiplayer/PlayerControllerMP.java
 +++ b/src/net/minecraft/client/multiplayer/PlayerControllerMP.java
 @@ -28,6 +28,8 @@ import net.minecraft.util.ResourceLocation;
@@ -5578,7 +5575,7 @@ index 1c4d5a3..05c8ab5 100644
                  return false;
              }
 diff --git a/src/net/minecraft/client/multiplayer/ServerList.java b/src/net/minecraft/client/multiplayer/ServerList.java
-index 8bfcbea..a5d71ef 100644
+index 3931254..a5d71ef 100644
 --- a/src/net/minecraft/client/multiplayer/ServerList.java
 +++ b/src/net/minecraft/client/multiplayer/ServerList.java
 @@ -28,6 +28,12 @@ public class ServerList
@@ -5628,7 +5625,7 @@ index 8bfcbea..a5d71ef 100644
              }
          }
 diff --git a/src/net/minecraft/client/multiplayer/WorldClient.java b/src/net/minecraft/client/multiplayer/WorldClient.java
-index 284bebf..8e7c23e 100644
+index a637637..8e7c23e 100644
 --- a/src/net/minecraft/client/multiplayer/WorldClient.java
 +++ b/src/net/minecraft/client/multiplayer/WorldClient.java
 @@ -1,10 +1,12 @@
@@ -5665,7 +5662,7 @@ index 284bebf..8e7c23e 100644
              var13.getBlock().randomDisplayTick(this, var12, var13, var5);
  
 diff --git a/src/net/minecraft/client/network/NetHandlerLoginClient.java b/src/net/minecraft/client/network/NetHandlerLoginClient.java
-index 4a4a4f8..7506221 100644
+index d6a17db..7506221 100644
 --- a/src/net/minecraft/client/network/NetHandlerLoginClient.java
 +++ b/src/net/minecraft/client/network/NetHandlerLoginClient.java
 @@ -5,11 +5,15 @@ import com.mojang.authlib.exceptions.AuthenticationException;
@@ -5693,7 +5690,7 @@ index 4a4a4f8..7506221 100644
  import org.apache.logging.log4j.Logger;
  
 diff --git a/src/net/minecraft/client/network/NetHandlerPlayClient.java b/src/net/minecraft/client/network/NetHandlerPlayClient.java
-index dd6c06e..6c85815 100644
+index 2b1d59a..6c85815 100644
 --- a/src/net/minecraft/client/network/NetHandlerPlayClient.java
 +++ b/src/net/minecraft/client/network/NetHandlerPlayClient.java
 @@ -1,39 +1,24 @@
@@ -5964,7 +5961,7 @@ index dd6c06e..6c85815 100644
          return var3;
      }
 diff --git a/src/net/minecraft/client/network/NetworkPlayerInfo.java b/src/net/minecraft/client/network/NetworkPlayerInfo.java
-index f5f680b..b2a5d77 100644
+index 76043f3..b2a5d77 100644
 --- a/src/net/minecraft/client/network/NetworkPlayerInfo.java
 +++ b/src/net/minecraft/client/network/NetworkPlayerInfo.java
 @@ -4,6 +4,7 @@ import com.google.common.base.Objects;
@@ -6118,7 +6115,7 @@ index f5f680b..b2a5d77 100644
  
      public int func_178835_l()
 diff --git a/src/net/minecraft/client/network/OldServerPinger.java b/src/net/minecraft/client/network/OldServerPinger.java
-index 4fa3c4e..a7f7608 100644
+index e63f122..a7f7608 100644
 --- a/src/net/minecraft/client/network/OldServerPinger.java
 +++ b/src/net/minecraft/client/network/OldServerPinger.java
 @@ -5,6 +5,7 @@ import com.google.common.base.Splitter;
@@ -6152,7 +6149,7 @@ index 4fa3c4e..a7f7608 100644
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
 diff --git a/src/net/minecraft/client/particle/Barrier.java b/src/net/minecraft/client/particle/Barrier.java
-index d450e62..ca743ea 100644
+index 20b65bb..ca743ea 100644
 --- a/src/net/minecraft/client/particle/Barrier.java
 +++ b/src/net/minecraft/client/particle/Barrier.java
 @@ -35,7 +35,7 @@ public class Barrier extends EntityFX
@@ -6165,7 +6162,7 @@ index d450e62..ca743ea 100644
          p_180434_1_.addVertexWithUV((double)(var13 - p_180434_4_ * var16 - p_180434_7_ * var16), (double)(var14 - p_180434_5_ * var16), (double)(var15 - p_180434_6_ * var16 - p_180434_8_ * var16), (double)var10, (double)var12);
          p_180434_1_.addVertexWithUV((double)(var13 - p_180434_4_ * var16 + p_180434_7_ * var16), (double)(var14 + p_180434_5_ * var16), (double)(var15 - p_180434_6_ * var16 + p_180434_8_ * var16), (double)var10, (double)var11);
 diff --git a/src/net/minecraft/client/particle/EffectRenderer.java b/src/net/minecraft/client/particle/EffectRenderer.java
-index cba3c5c..5f42136 100644
+index a523713..5f42136 100644
 --- a/src/net/minecraft/client/particle/EffectRenderer.java
 +++ b/src/net/minecraft/client/particle/EffectRenderer.java
 @@ -2,12 +2,14 @@ package net.minecraft.client.particle;
@@ -6184,7 +6181,7 @@ index cba3c5c..5f42136 100644
  import net.minecraft.block.material.Material;
  import net.minecraft.block.state.IBlockState;
 diff --git a/src/net/minecraft/client/particle/EntityBreakingFX.java b/src/net/minecraft/client/particle/EntityBreakingFX.java
-index ede5178..039a5e6 100644
+index a5b95d5..039a5e6 100644
 --- a/src/net/minecraft/client/particle/EntityBreakingFX.java
 +++ b/src/net/minecraft/client/particle/EntityBreakingFX.java
 @@ -61,7 +61,7 @@ public class EntityBreakingFX extends EntityFX
@@ -6197,7 +6194,7 @@ index ede5178..039a5e6 100644
          p_180434_1_.addVertexWithUV((double)(var14 - p_180434_4_ * var13 + p_180434_7_ * var13), (double)(var15 + p_180434_5_ * var13), (double)(var16 - p_180434_6_ * var13 + p_180434_8_ * var13), (double)var9, (double)var11);
          p_180434_1_.addVertexWithUV((double)(var14 + p_180434_4_ * var13 + p_180434_7_ * var13), (double)(var15 + p_180434_5_ * var13), (double)(var16 + p_180434_6_ * var13 + p_180434_8_ * var13), (double)var10, (double)var11);
 diff --git a/src/net/minecraft/client/particle/EntityDiggingFX.java b/src/net/minecraft/client/particle/EntityDiggingFX.java
-index f1035f6..4595b6e 100644
+index 4c5c7a2..4595b6e 100644
 --- a/src/net/minecraft/client/particle/EntityDiggingFX.java
 +++ b/src/net/minecraft/client/particle/EntityDiggingFX.java
 @@ -82,7 +82,7 @@ public class EntityDiggingFX extends EntityFX
@@ -6210,7 +6207,7 @@ index f1035f6..4595b6e 100644
          p_180434_1_.addVertexWithUV((double)(var14 - p_180434_4_ * var13 + p_180434_7_ * var13), (double)(var15 + p_180434_5_ * var13), (double)(var16 - p_180434_6_ * var13 + p_180434_8_ * var13), (double)var9, (double)var11);
          p_180434_1_.addVertexWithUV((double)(var14 + p_180434_4_ * var13 + p_180434_7_ * var13), (double)(var15 + p_180434_5_ * var13), (double)(var16 + p_180434_6_ * var13 + p_180434_8_ * var13), (double)var10, (double)var11);
 diff --git a/src/net/minecraft/client/particle/EntityFX.java b/src/net/minecraft/client/particle/EntityFX.java
-index bdbe2f0..ea37f40 100644
+index c531492..ea37f40 100644
 --- a/src/net/minecraft/client/particle/EntityFX.java
 +++ b/src/net/minecraft/client/particle/EntityFX.java
 @@ -188,7 +188,7 @@ public class EntityFX extends Entity
@@ -6223,7 +6220,7 @@ index bdbe2f0..ea37f40 100644
          p_180434_1_.addVertexWithUV((double)(var14 - p_180434_4_ * var13 + p_180434_7_ * var13), (double)(var15 + p_180434_5_ * var13), (double)(var16 - p_180434_6_ * var13 + p_180434_8_ * var13), (double)var10, (double)var11);
          p_180434_1_.addVertexWithUV((double)(var14 + p_180434_4_ * var13 + p_180434_7_ * var13), (double)(var15 + p_180434_5_ * var13), (double)(var16 + p_180434_6_ * var13 + p_180434_8_ * var13), (double)var9, (double)var11);
 diff --git a/src/net/minecraft/client/particle/EntityFireworkOverlayFX.java b/src/net/minecraft/client/particle/EntityFireworkOverlayFX.java
-index 1a7ed22..591c8c0 100644
+index e3e3adf..591c8c0 100644
 --- a/src/net/minecraft/client/particle/EntityFireworkOverlayFX.java
 +++ b/src/net/minecraft/client/particle/EntityFireworkOverlayFX.java
 @@ -26,7 +26,7 @@ public class EntityFireworkOverlayFX extends EntityFX
@@ -6236,7 +6233,7 @@ index 1a7ed22..591c8c0 100644
          p_180434_1_.addVertexWithUV((double)(var14 - p_180434_4_ * var13 + p_180434_7_ * var13), (double)(var15 + p_180434_5_ * var13), (double)(var16 - p_180434_6_ * var13 + p_180434_8_ * var13), (double)var10, (double)var11);
          p_180434_1_.addVertexWithUV((double)(var14 + p_180434_4_ * var13 + p_180434_7_ * var13), (double)(var15 + p_180434_5_ * var13), (double)(var16 + p_180434_6_ * var13 + p_180434_8_ * var13), (double)var9, (double)var11);
 diff --git a/src/net/minecraft/client/particle/EntityFootStepFX.java b/src/net/minecraft/client/particle/EntityFootStepFX.java
-index 462000b..56cd73c 100644
+index 025fc84..56cd73c 100644
 --- a/src/net/minecraft/client/particle/EntityFootStepFX.java
 +++ b/src/net/minecraft/client/particle/EntityFootStepFX.java
 @@ -48,7 +48,7 @@ public class EntityFootStepFX extends EntityFX
@@ -6249,7 +6246,7 @@ index 462000b..56cd73c 100644
          p_180434_1_.addVertexWithUV((double)(var12 + var11), (double)var13, (double)(var14 + var11), 1.0D, 1.0D);
          p_180434_1_.addVertexWithUV((double)(var12 + var11), (double)var13, (double)(var14 - var11), 1.0D, 0.0D);
 diff --git a/src/net/minecraft/client/particle/EntityLargeExplodeFX.java b/src/net/minecraft/client/particle/EntityLargeExplodeFX.java
-index 21fdc5b..703c4d2 100644
+index 1cefc15..703c4d2 100644
 --- a/src/net/minecraft/client/particle/EntityLargeExplodeFX.java
 +++ b/src/net/minecraft/client/particle/EntityLargeExplodeFX.java
 @@ -49,7 +49,7 @@ public class EntityLargeExplodeFX extends EntityFX
@@ -6262,7 +6259,7 @@ index 21fdc5b..703c4d2 100644
              p_180434_1_.func_178963_b(240);
              p_180434_1_.addVertexWithUV((double)(var15 - p_180434_4_ * var14 - p_180434_7_ * var14), (double)(var16 - p_180434_5_ * var14), (double)(var17 - p_180434_6_ * var14 - p_180434_8_ * var14), (double)var11, (double)var13);
 diff --git a/src/net/minecraft/client/renderer/BlockFluidRenderer.java b/src/net/minecraft/client/renderer/BlockFluidRenderer.java
-index 13aedf6..ff74680 100644
+index 69db7af..ff74680 100644
 --- a/src/net/minecraft/client/renderer/BlockFluidRenderer.java
 +++ b/src/net/minecraft/client/renderer/BlockFluidRenderer.java
 @@ -118,7 +118,7 @@ public class BlockFluidRenderer
@@ -6293,7 +6290,7 @@ index 13aedf6..ff74680 100644
                      p_178270_4_.addVertexWithUV(var58, var26 + (double)var37, var44, (double)var47, (double)var49);
                      p_178270_4_.addVertexWithUV(var58, var26 + 0.0D, var44, (double)var47, (double)var50);
 diff --git a/src/net/minecraft/client/renderer/BlockModelRenderer.java b/src/net/minecraft/client/renderer/BlockModelRenderer.java
-index e9db01f..0d57e4a 100644
+index 21be134..0d57e4a 100644
 --- a/src/net/minecraft/client/renderer/BlockModelRenderer.java
 +++ b/src/net/minecraft/client/renderer/BlockModelRenderer.java
 @@ -3,6 +3,7 @@ package net.minecraft.client.renderer;
@@ -6329,7 +6326,7 @@ index e9db01f..0d57e4a 100644
              var7 = true;
          }
 diff --git a/src/net/minecraft/client/renderer/EntityRenderer.java b/src/net/minecraft/client/renderer/EntityRenderer.java
-index e32c68b..8fbc3a7 100644
+index 9f404dc..8fbc3a7 100644
 --- a/src/net/minecraft/client/renderer/EntityRenderer.java
 +++ b/src/net/minecraft/client/renderer/EntityRenderer.java
 @@ -1,11 +1,11 @@
@@ -6561,7 +6558,7 @@ index e32c68b..8fbc3a7 100644
              int var7 = ((EntityLivingBase)var3).getActivePotionEffect(Potion.blindness).getDuration();
  
 diff --git a/src/net/minecraft/client/renderer/ImageBufferDownload.java b/src/net/minecraft/client/renderer/ImageBufferDownload.java
-index 7c9693f..8db8462 100644
+index f98b5f2..8db8462 100644
 --- a/src/net/minecraft/client/renderer/ImageBufferDownload.java
 +++ b/src/net/minecraft/client/renderer/ImageBufferDownload.java
 @@ -20,8 +20,10 @@ public class ImageBufferDownload implements IImageBuffer
@@ -6578,7 +6575,7 @@ index 7c9693f..8db8462 100644
              Graphics var3 = var2.getGraphics();
              var3.drawImage(p_78432_1_, 0, 0, (ImageObserver)null);
 diff --git a/src/net/minecraft/client/renderer/InventoryEffectRenderer.java b/src/net/minecraft/client/renderer/InventoryEffectRenderer.java
-index 0bf153c..b8411b0 100644
+index 7ea9cba..b8411b0 100644
 --- a/src/net/minecraft/client/renderer/InventoryEffectRenderer.java
 +++ b/src/net/minecraft/client/renderer/InventoryEffectRenderer.java
 @@ -105,9 +105,9 @@ public abstract class InventoryEffectRenderer extends GuiContainer
@@ -6594,7 +6591,7 @@ index 0bf153c..b8411b0 100644
          }
      }
 diff --git a/src/net/minecraft/client/renderer/ItemModelMesher.java b/src/net/minecraft/client/renderer/ItemModelMesher.java
-index ab2e5fa..77057af 100644
+index a2263ad..77057af 100644
 --- a/src/net/minecraft/client/renderer/ItemModelMesher.java
 +++ b/src/net/minecraft/client/renderer/ItemModelMesher.java
 @@ -1,9 +1,11 @@
@@ -6630,7 +6627,7 @@ index ab2e5fa..77057af 100644
          if (var3 == null)
          {
 diff --git a/src/net/minecraft/client/renderer/ItemRenderer.java b/src/net/minecraft/client/renderer/ItemRenderer.java
-index 0f3580a..8bba567 100644
+index 255b3ae..8bba567 100644
 --- a/src/net/minecraft/client/renderer/ItemRenderer.java
 +++ b/src/net/minecraft/client/renderer/ItemRenderer.java
 @@ -396,7 +396,7 @@ public class ItemRenderer
@@ -6643,7 +6640,7 @@ index 0f3580a..8bba567 100644
              if (this.mc.thePlayer.isInsideOfMaterial(Material.water))
              {
 diff --git a/src/net/minecraft/client/renderer/RenderGlobal.java b/src/net/minecraft/client/renderer/RenderGlobal.java
-index 0ccdbe4..3dabe5f 100644
+index db09dad..3dabe5f 100644
 --- a/src/net/minecraft/client/renderer/RenderGlobal.java
 +++ b/src/net/minecraft/client/renderer/RenderGlobal.java
 @@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
@@ -6827,7 +6824,7 @@ index 0ccdbe4..3dabe5f 100644
  
          var3.addVertex(p_147590_0_.minX, p_147590_0_.minY, p_147590_0_.minZ);
 diff --git a/src/net/minecraft/client/renderer/ThreadDownloadImageData.java b/src/net/minecraft/client/renderer/ThreadDownloadImageData.java
-index 72b9763..9d3d3f8 100644
+index 2183c8e..9d3d3f8 100644
 --- a/src/net/minecraft/client/renderer/ThreadDownloadImageData.java
 +++ b/src/net/minecraft/client/renderer/ThreadDownloadImageData.java
 @@ -121,8 +121,11 @@ public class ThreadDownloadImageData extends SimpleTexture
@@ -6858,7 +6855,7 @@ index 72b9763..9d3d3f8 100644
                  finally
                  {
 diff --git a/src/net/minecraft/client/renderer/WorldRenderer.java b/src/net/minecraft/client/renderer/WorldRenderer.java
-index 736354e..777100f 100644
+index 424e690..777100f 100644
 --- a/src/net/minecraft/client/renderer/WorldRenderer.java
 +++ b/src/net/minecraft/client/renderer/WorldRenderer.java
 @@ -7,12 +7,15 @@ import java.nio.IntBuffer;
@@ -7027,7 +7024,7 @@ index 736354e..777100f 100644
  
      /**
 diff --git a/src/net/minecraft/client/renderer/chunk/ChunkRenderWorker.java b/src/net/minecraft/client/renderer/chunk/ChunkRenderWorker.java
-index c1aa703..448c142 100644
+index 29f19e1..448c142 100644
 --- a/src/net/minecraft/client/renderer/chunk/ChunkRenderWorker.java
 +++ b/src/net/minecraft/client/renderer/chunk/ChunkRenderWorker.java
 @@ -4,14 +4,17 @@ import com.google.common.collect.Lists;
@@ -7049,7 +7046,7 @@ index c1aa703..448c142 100644
  import org.apache.logging.log4j.Logger;
  
 diff --git a/src/net/minecraft/client/renderer/chunk/VisGraph.java b/src/net/minecraft/client/renderer/chunk/VisGraph.java
-index b2268f7..e2f3260 100644
+index 7508484..e2f3260 100644
 --- a/src/net/minecraft/client/renderer/chunk/VisGraph.java
 +++ b/src/net/minecraft/client/renderer/chunk/VisGraph.java
 @@ -20,7 +20,9 @@ public class VisGraph
@@ -7064,7 +7061,7 @@ index b2268f7..e2f3260 100644
      }
  
 diff --git a/src/net/minecraft/client/renderer/entity/Render.java b/src/net/minecraft/client/renderer/entity/Render.java
-index a00ffea..91fc569 100644
+index e756669..91fc569 100644
 --- a/src/net/minecraft/client/renderer/entity/Render.java
 +++ b/src/net/minecraft/client/renderer/entity/Render.java
 @@ -1,6 +1,7 @@
@@ -7178,7 +7175,7 @@ index a00ffea..91fc569 100644
              var16.addVertex((double)(-var18 - 1), (double)(8 + var17), 0.0D);
              var16.addVertex((double)(var18 + 1), (double)(8 + var17), 0.0D);
 diff --git a/src/net/minecraft/client/renderer/entity/RenderDragon.java b/src/net/minecraft/client/renderer/entity/RenderDragon.java
-index 63a12a1..bba85f9 100644
+index 689b2cc..bba85f9 100644
 --- a/src/net/minecraft/client/renderer/entity/RenderDragon.java
 +++ b/src/net/minecraft/client/renderer/entity/RenderDragon.java
 @@ -136,9 +136,9 @@ public class RenderDragon extends RenderLiving
@@ -7194,7 +7191,7 @@ index 63a12a1..bba85f9 100644
          }
  
 diff --git a/src/net/minecraft/client/renderer/entity/RenderFallingBlock.java b/src/net/minecraft/client/renderer/entity/RenderFallingBlock.java
-index 6936e51..de78ceb 100644
+index b6569da..de78ceb 100644
 --- a/src/net/minecraft/client/renderer/entity/RenderFallingBlock.java
 +++ b/src/net/minecraft/client/renderer/entity/RenderFallingBlock.java
 @@ -1,5 +1,7 @@
@@ -7219,7 +7216,7 @@ index 6936e51..de78ceb 100644
              IBlockState var10 = p_180557_1_.getBlock();
              Block var11 = var10.getBlock();
 diff --git a/src/net/minecraft/client/renderer/entity/RenderFish.java b/src/net/minecraft/client/renderer/entity/RenderFish.java
-index fdad66c..2031f2e 100644
+index d1b8265..2031f2e 100644
 --- a/src/net/minecraft/client/renderer/entity/RenderFish.java
 +++ b/src/net/minecraft/client/renderer/entity/RenderFish.java
 @@ -86,7 +86,7 @@ public class RenderFish extends Render
@@ -7232,7 +7229,7 @@ index fdad66c..2031f2e 100644
  
              for (int var45 = 0; var45 <= var44; ++var45)
 diff --git a/src/net/minecraft/client/renderer/entity/RenderGuardian.java b/src/net/minecraft/client/renderer/entity/RenderGuardian.java
-index ac9dfc4..c103f1d 100644
+index ef1550c..c103f1d 100644
 --- a/src/net/minecraft/client/renderer/entity/RenderGuardian.java
 +++ b/src/net/minecraft/client/renderer/entity/RenderGuardian.java
 @@ -109,7 +109,7 @@ public class RenderGuardian extends RenderLiving
@@ -7245,7 +7242,7 @@ index ac9dfc4..c103f1d 100644
              double var31 = var29 * 1.41D;
              double var33 = 0.0D + Math.cos(var26 + 2.356194490192345D) * var31;
 diff --git a/src/net/minecraft/client/renderer/entity/RenderItem.java b/src/net/minecraft/client/renderer/entity/RenderItem.java
-index eadc994..270ffed 100644
+index 3da61f1..270ffed 100644
 --- a/src/net/minecraft/client/renderer/entity/RenderItem.java
 +++ b/src/net/minecraft/client/renderer/entity/RenderItem.java
 @@ -3,6 +3,7 @@ package net.minecraft.client.renderer.entity;
@@ -7384,7 +7381,7 @@ index eadc994..270ffed 100644
          p_175044_1_.addVertex((double)(p_175044_2_ + 0), (double)(p_175044_3_ + p_175044_5_), 0.0D);
          p_175044_1_.addVertex((double)(p_175044_2_ + p_175044_4_), (double)(p_175044_3_ + p_175044_5_), 0.0D);
 diff --git a/src/net/minecraft/client/renderer/entity/RenderLightningBolt.java b/src/net/minecraft/client/renderer/entity/RenderLightningBolt.java
-index cf9b5c6..ca01b20 100644
+index 4175a3f..ca01b20 100644
 --- a/src/net/minecraft/client/renderer/entity/RenderLightningBolt.java
 +++ b/src/net/minecraft/client/renderer/entity/RenderLightningBolt.java
 @@ -85,7 +85,7 @@ public class RenderLightningBolt extends Render
@@ -7397,7 +7394,7 @@ index cf9b5c6..ca01b20 100644
  
                      if (var20 == 0)
 diff --git a/src/net/minecraft/client/renderer/entity/RenderLiving.java b/src/net/minecraft/client/renderer/entity/RenderLiving.java
-index f4b6692..4d5b95d 100644
+index 0aca592..4d5b95d 100644
 --- a/src/net/minecraft/client/renderer/entity/RenderLiving.java
 +++ b/src/net/minecraft/client/renderer/entity/RenderLiving.java
 @@ -120,11 +120,11 @@ public abstract class RenderLiving extends RendererLivingEntity
@@ -7429,7 +7426,7 @@ index f4b6692..4d5b95d 100644
  
                  var49 = (float)var48 / 24.0F;
 diff --git a/src/net/minecraft/client/renderer/entity/RenderManager.java b/src/net/minecraft/client/renderer/entity/RenderManager.java
-index 7fdac31..7a7e5d1 100644
+index aec2cc5..7a7e5d1 100644
 --- a/src/net/minecraft/client/renderer/entity/RenderManager.java
 +++ b/src/net/minecraft/client/renderer/entity/RenderManager.java
 @@ -1,7 +1,7 @@
@@ -7497,7 +7494,7 @@ index 7fdac31..7a7e5d1 100644
          var14.addVertex(p_85094_2_ + var15.xCoord * 2.0D, p_85094_4_ + (double)p_85094_1_.getEyeHeight() + var15.yCoord * 2.0D, p_85094_6_ + var15.zCoord * 2.0D);
          var16.draw();
 diff --git a/src/net/minecraft/client/renderer/entity/RenderPlayer.java b/src/net/minecraft/client/renderer/entity/RenderPlayer.java
-index bc2dd09..56da02b 100644
+index 1311949..56da02b 100644
 --- a/src/net/minecraft/client/renderer/entity/RenderPlayer.java
 +++ b/src/net/minecraft/client/renderer/entity/RenderPlayer.java
 @@ -1,5 +1,7 @@
@@ -7522,7 +7519,7 @@ index bc2dd09..56da02b 100644
              var2.bipedHead.showModel = true;
              var2.bipedHeadwear.showModel = true;
 diff --git a/src/net/minecraft/client/renderer/entity/RenderXPOrb.java b/src/net/minecraft/client/renderer/entity/RenderXPOrb.java
-index 7bcac52..9aeef16 100644
+index 31fd670..9aeef16 100644
 --- a/src/net/minecraft/client/renderer/entity/RenderXPOrb.java
 +++ b/src/net/minecraft/client/renderer/entity/RenderXPOrb.java
 @@ -58,7 +58,7 @@ public class RenderXPOrb extends Render
@@ -7535,7 +7532,7 @@ index 7bcac52..9aeef16 100644
          var26.addVertexWithUV((double)(0.0F - var16), (double)(0.0F - var17), 0.0D, (double)var11, (double)var14);
          var26.addVertexWithUV((double)(var15 - var16), (double)(0.0F - var17), 0.0D, (double)var12, (double)var14);
 diff --git a/src/net/minecraft/client/renderer/entity/RendererLivingEntity.java b/src/net/minecraft/client/renderer/entity/RendererLivingEntity.java
-index 8703f17..03d67ce 100644
+index 0bd5f10..03d67ce 100644
 --- a/src/net/minecraft/client/renderer/entity/RendererLivingEntity.java
 +++ b/src/net/minecraft/client/renderer/entity/RendererLivingEntity.java
 @@ -1,9 +1,11 @@
@@ -7599,7 +7596,7 @@ index 8703f17..03d67ce 100644
                      var15.addVertex((double)(-var16 - 1), 8.0D, 0.0D);
                      var15.addVertex((double)(var16 + 1), 8.0D, 0.0D);
 diff --git a/src/net/minecraft/client/renderer/entity/layers/LayerEnderDragonDeath.java b/src/net/minecraft/client/renderer/entity/layers/LayerEnderDragonDeath.java
-index 2bb44f9..7d13e05 100644
+index d4e344e..7d13e05 100644
 --- a/src/net/minecraft/client/renderer/entity/layers/LayerEnderDragonDeath.java
 +++ b/src/net/minecraft/client/renderer/entity/layers/LayerEnderDragonDeath.java
 @@ -49,9 +49,9 @@ public class LayerEnderDragonDeath implements LayerRenderer
@@ -7615,7 +7612,7 @@ index 2bb44f9..7d13e05 100644
                  var10.addVertex(0.866D * (double)var16, (double)var15, (double)(-0.5F * var16));
                  var10.addVertex(0.0D, (double)var15, (double)(1.0F * var16));
 diff --git a/src/net/minecraft/client/renderer/texture/TextureAtlasSprite.java b/src/net/minecraft/client/renderer/texture/TextureAtlasSprite.java
-index 5a4668d..4270ef4 100644
+index 3355d8a..4270ef4 100644
 --- a/src/net/minecraft/client/renderer/texture/TextureAtlasSprite.java
 +++ b/src/net/minecraft/client/renderer/texture/TextureAtlasSprite.java
 @@ -1,11 +1,13 @@
@@ -7633,7 +7630,7 @@ index 5a4668d..4270ef4 100644
  import net.minecraft.client.resources.data.AnimationMetadataSection;
  import net.minecraft.crash.CrashReport;
 diff --git a/src/net/minecraft/client/renderer/texture/TextureManager.java b/src/net/minecraft/client/renderer/texture/TextureManager.java
-index cc60332..8c03e9e 100644
+index 483b69c..8c03e9e 100644
 --- a/src/net/minecraft/client/renderer/texture/TextureManager.java
 +++ b/src/net/minecraft/client/renderer/texture/TextureManager.java
 @@ -2,21 +2,26 @@ package net.minecraft.client.renderer.texture;
@@ -7677,7 +7674,7 @@ index cc60332..8c03e9e 100644
          ITextureObject p_110579_2_2 = p_110579_2_;
  
 diff --git a/src/net/minecraft/client/renderer/texture/TextureMap.java b/src/net/minecraft/client/renderer/texture/TextureMap.java
-index feb0773..8247a11 100644
+index a7aaeab..8247a11 100644
 --- a/src/net/minecraft/client/renderer/texture/TextureMap.java
 +++ b/src/net/minecraft/client/renderer/texture/TextureMap.java
 @@ -2,6 +2,7 @@ package net.minecraft.client.renderer.texture;
@@ -7705,7 +7702,7 @@ index feb0773..8247a11 100644
  import org.apache.logging.log4j.Logger;
  
 diff --git a/src/net/minecraft/client/renderer/tileentity/RenderItemFrame.java b/src/net/minecraft/client/renderer/tileentity/RenderItemFrame.java
-index 292833f..a57118c 100644
+index fb3f7bf..a57118c 100644
 --- a/src/net/minecraft/client/renderer/tileentity/RenderItemFrame.java
 +++ b/src/net/minecraft/client/renderer/tileentity/RenderItemFrame.java
 @@ -209,7 +209,7 @@ public class RenderItemFrame extends Render
@@ -7718,7 +7715,7 @@ index 292833f..a57118c 100644
                      var16.addVertex((double)(-var17 - 1), 8.0D, 0.0D);
                      var16.addVertex((double)(var17 + 1), 8.0D, 0.0D);
 diff --git a/src/net/minecraft/client/renderer/tileentity/TileEntityBeaconRenderer.java b/src/net/minecraft/client/renderer/tileentity/TileEntityBeaconRenderer.java
-index 7a2fbb9..d76cf87 100644
+index a571aa7..d76cf87 100644
 --- a/src/net/minecraft/client/renderer/tileentity/TileEntityBeaconRenderer.java
 +++ b/src/net/minecraft/client/renderer/tileentity/TileEntityBeaconRenderer.java
 @@ -56,7 +56,7 @@ public class TileEntityBeaconRenderer extends TileEntitySpecialRenderer
@@ -7740,7 +7737,7 @@ index 7a2fbb9..d76cf87 100644
                  var22 = 0.2D;
                  var24 = 0.8D;
 diff --git a/src/net/minecraft/client/renderer/tileentity/TileEntityEndPortalRenderer.java b/src/net/minecraft/client/renderer/tileentity/TileEntityEndPortalRenderer.java
-index 1494ae8..6338bde 100644
+index 2cd43cf..6338bde 100644
 --- a/src/net/minecraft/client/renderer/tileentity/TileEntityEndPortalRenderer.java
 +++ b/src/net/minecraft/client/renderer/tileentity/TileEntityEndPortalRenderer.java
 @@ -102,7 +102,7 @@ public class TileEntityEndPortalRenderer extends TileEntitySpecialRenderer
@@ -7753,7 +7750,7 @@ index 1494ae8..6338bde 100644
              var26.addVertex(p_180544_2_, p_180544_4_ + (double)var13, p_180544_6_ + 1.0D);
              var26.addVertex(p_180544_2_ + 1.0D, p_180544_4_ + (double)var13, p_180544_6_ + 1.0D);
 diff --git a/src/net/minecraft/client/renderer/tileentity/TileEntityPistonRenderer.java b/src/net/minecraft/client/renderer/tileentity/TileEntityPistonRenderer.java
-index ddf542b..dad9414 100644
+index ea40a81..dad9414 100644
 --- a/src/net/minecraft/client/renderer/tileentity/TileEntityPistonRenderer.java
 +++ b/src/net/minecraft/client/renderer/tileentity/TileEntityPistonRenderer.java
 @@ -52,7 +52,7 @@ public class TileEntityPistonRenderer extends TileEntitySpecialRenderer
@@ -7766,7 +7763,7 @@ index ddf542b..dad9414 100644
  
              if (var12 == Blocks.piston_head && p_178461_1_.func_145860_a(p_178461_8_) < 0.5F)
 diff --git a/src/net/minecraft/client/renderer/tileentity/TileEntityRendererDispatcher.java b/src/net/minecraft/client/renderer/tileentity/TileEntityRendererDispatcher.java
-index 6e4cd84..d7affba 100644
+index a7f60c8..d7affba 100644
 --- a/src/net/minecraft/client/renderer/tileentity/TileEntityRendererDispatcher.java
 +++ b/src/net/minecraft/client/renderer/tileentity/TileEntityRendererDispatcher.java
 @@ -1,8 +1,10 @@
@@ -7781,7 +7778,7 @@ index 6e4cd84..d7affba 100644
  import net.minecraft.client.renderer.GlStateManager;
  import net.minecraft.client.renderer.OpenGlHelper;
 diff --git a/src/net/minecraft/client/renderer/tileentity/TileEntitySkullRenderer.java b/src/net/minecraft/client/renderer/tileentity/TileEntitySkullRenderer.java
-index 24f6176..eeba0a5 100644
+index f2602e9..eeba0a5 100644
 --- a/src/net/minecraft/client/renderer/tileentity/TileEntitySkullRenderer.java
 +++ b/src/net/minecraft/client/renderer/tileentity/TileEntitySkullRenderer.java
 @@ -73,7 +73,7 @@ public class TileEntitySkullRenderer extends TileEntitySpecialRenderer
@@ -7803,7 +7800,7 @@ index 24f6176..eeba0a5 100644
                      }
  
 diff --git a/src/net/minecraft/client/resources/DefaultPlayerSkin.java b/src/net/minecraft/client/resources/DefaultPlayerSkin.java
-index 8d1baca..299d546 100644
+index 6f44429..299d546 100644
 --- a/src/net/minecraft/client/resources/DefaultPlayerSkin.java
 +++ b/src/net/minecraft/client/resources/DefaultPlayerSkin.java
 @@ -3,29 +3,30 @@ package net.minecraft.client.resources;
@@ -7848,7 +7845,7 @@ index 8d1baca..299d546 100644
      }
  }
 diff --git a/src/net/minecraft/client/resources/DefaultResourcePack.java b/src/net/minecraft/client/resources/DefaultResourcePack.java
-index db03245..8517494 100644
+index 07aa33f..8517494 100644
 --- a/src/net/minecraft/client/resources/DefaultResourcePack.java
 +++ b/src/net/minecraft/client/resources/DefaultResourcePack.java
 @@ -1,6 +1,7 @@
@@ -7877,7 +7874,7 @@ index db03245..8517494 100644
      {
          File var2 = (File)this.field_152781_b.get(p_152780_1_.toString());
 diff --git a/src/net/minecraft/client/resources/FallbackResourceManager.java b/src/net/minecraft/client/resources/FallbackResourceManager.java
-index f7705cd..d90c1fb 100644
+index 9fe6586..d90c1fb 100644
 --- a/src/net/minecraft/client/resources/FallbackResourceManager.java
 +++ b/src/net/minecraft/client/resources/FallbackResourceManager.java
 @@ -1,6 +1,7 @@
@@ -7909,7 +7906,7 @@ index f7705cd..d90c1fb 100644
      {
          InputStream var3 = p_177245_2_.getInputStream(p_177245_1_);
 diff --git a/src/net/minecraft/client/resources/ResourcePackListEntry.java b/src/net/minecraft/client/resources/ResourcePackListEntry.java
-index 31bf9d0..353aa6c 100644
+index 10aeaf1..353aa6c 100644
 --- a/src/net/minecraft/client/resources/ResourcePackListEntry.java
 +++ b/src/net/minecraft/client/resources/ResourcePackListEntry.java
 @@ -95,12 +95,12 @@ public abstract class ResourcePackListEntry implements GuiListExtended.IGuiListE
@@ -7928,7 +7925,7 @@ index 31bf9d0..353aa6c 100644
      }
  
 diff --git a/src/net/minecraft/client/resources/ResourcePackRepository.java b/src/net/minecraft/client/resources/ResourcePackRepository.java
-index d34b311..cf73e47 100644
+index 6e67db7..cf73e47 100644
 --- a/src/net/minecraft/client/resources/ResourcePackRepository.java
 +++ b/src/net/minecraft/client/resources/ResourcePackRepository.java
 @@ -193,6 +193,7 @@ public class ResourcePackRepository
@@ -7957,7 +7954,7 @@ index d34b311..cf73e47 100644
  
      public ListenableFuture func_177319_a(File p_177319_1_)
 diff --git a/src/net/minecraft/client/resources/SkinManager.java b/src/net/minecraft/client/resources/SkinManager.java
-index 7729695..966a39d 100644
+index 8ccc45c..966a39d 100644
 --- a/src/net/minecraft/client/resources/SkinManager.java
 +++ b/src/net/minecraft/client/resources/SkinManager.java
 @@ -1,22 +1,20 @@
@@ -8030,7 +8027,7 @@ index 7729695..966a39d 100644
                  {
                      private static final String __OBFID = "CL_00001826";
 diff --git a/src/net/minecraft/client/settings/GameSettings.java b/src/net/minecraft/client/settings/GameSettings.java
-index 29bfeec..9c3b345 100644
+index b1cd818..9c3b345 100644
 --- a/src/net/minecraft/client/settings/GameSettings.java
 +++ b/src/net/minecraft/client/settings/GameSettings.java
 @@ -168,7 +168,8 @@ public class GameSettings
@@ -8044,7 +8041,7 @@ index 29bfeec..9c3b345 100644
      /** Determines amount of particles. 0 = All, 1 = Decreased, 2 = Minimal */
      public int particleSetting;
 diff --git a/src/net/minecraft/client/settings/KeyBinding.java b/src/net/minecraft/client/settings/KeyBinding.java
-index 6797266..9d4f0e9 100644
+index c148183..9d4f0e9 100644
 --- a/src/net/minecraft/client/settings/KeyBinding.java
 +++ b/src/net/minecraft/client/settings/KeyBinding.java
 @@ -18,8 +18,12 @@ public class KeyBinding implements Comparable
@@ -8063,7 +8060,7 @@ index 6797266..9d4f0e9 100644
      private static final String __OBFID = "CL_00000628";
  
 diff --git a/src/net/minecraft/client/shader/Framebuffer.java b/src/net/minecraft/client/shader/Framebuffer.java
-index 4702880..5b9f541 100644
+index 6d045d1..5b9f541 100644
 --- a/src/net/minecraft/client/shader/Framebuffer.java
 +++ b/src/net/minecraft/client/shader/Framebuffer.java
 @@ -251,7 +251,7 @@ public class Framebuffer
@@ -8076,7 +8073,7 @@ index 4702880..5b9f541 100644
              var9.addVertexWithUV((double)var4, (double)var5, 0.0D, (double)var6, 0.0D);
              var9.addVertexWithUV((double)var4, 0.0D, 0.0D, (double)var6, (double)var7);
 diff --git a/src/net/minecraft/client/shader/Shader.java b/src/net/minecraft/client/shader/Shader.java
-index e24bbd3..7ce08ef 100644
+index ab192fc..7ce08ef 100644
 --- a/src/net/minecraft/client/shader/Shader.java
 +++ b/src/net/minecraft/client/shader/Shader.java
 @@ -90,7 +90,7 @@ public class Shader
@@ -8089,7 +8086,7 @@ index e24bbd3..7ce08ef 100644
          var6.addVertex((double)var2, (double)var3, 500.0D);
          var6.addVertex((double)var2, 0.0D, 500.0D);
 diff --git a/src/net/minecraft/client/stream/BroadcastController.java b/src/net/minecraft/client/stream/BroadcastController.java
-index e03b8b1..d57e0d8 100644
+index 3cfbb4d..d57e0d8 100644
 --- a/src/net/minecraft/client/stream/BroadcastController.java
 +++ b/src/net/minecraft/client/stream/BroadcastController.java
 @@ -1,14 +1,18 @@
@@ -8112,7 +8109,7 @@ index e03b8b1..d57e0d8 100644
  import tv.twitch.Core;
  import tv.twitch.ErrorCode;
 diff --git a/src/net/minecraft/command/IEntitySelector.java b/src/net/minecraft/command/IEntitySelector.java
-index f0f7524..8ffefc0 100644
+index f7f8059..8ffefc0 100644
 --- a/src/net/minecraft/command/IEntitySelector.java
 +++ b/src/net/minecraft/command/IEntitySelector.java
 @@ -52,7 +52,7 @@ public final class IEntitySelector
@@ -8125,7 +8122,7 @@ index f0f7524..8ffefc0 100644
          public boolean apply(Object p_apply_1_)
          {
 diff --git a/src/net/minecraft/command/server/CommandBlockLogic.java b/src/net/minecraft/command/server/CommandBlockLogic.java
-index 5f4e0f3..778d707 100644
+index d01df20..778d707 100644
 --- a/src/net/minecraft/command/server/CommandBlockLogic.java
 +++ b/src/net/minecraft/command/server/CommandBlockLogic.java
 @@ -1,9 +1,11 @@
@@ -8156,7 +8153,7 @@ index 5f4e0f3..778d707 100644
          }
      }
 diff --git a/src/net/minecraft/crash/CrashReport.java b/src/net/minecraft/crash/CrashReport.java
-index 66f1ffd..892f197 100644
+index 0a4366d..892f197 100644
 --- a/src/net/minecraft/crash/CrashReport.java
 +++ b/src/net/minecraft/crash/CrashReport.java
 @@ -1,6 +1,7 @@
@@ -8221,7 +8218,7 @@ index 66f1ffd..892f197 100644
          try
          {
 diff --git a/src/net/minecraft/crash/CrashReportCategory.java b/src/net/minecraft/crash/CrashReportCategory.java
-index c55aa0c..6cc2c1f 100644
+index 386cfae..6cc2c1f 100644
 --- a/src/net/minecraft/crash/CrashReportCategory.java
 +++ b/src/net/minecraft/crash/CrashReportCategory.java
 @@ -1,11 +1,14 @@
@@ -8240,7 +8237,7 @@ index c55aa0c..6cc2c1f 100644
  
  public class CrashReportCategory
 diff --git a/src/net/minecraft/entity/DataWatcher.java b/src/net/minecraft/entity/DataWatcher.java
-index 6b59121..cdf03c7 100644
+index 6bd900a..cdf03c7 100644
 --- a/src/net/minecraft/entity/DataWatcher.java
 +++ b/src/net/minecraft/entity/DataWatcher.java
 @@ -2,6 +2,7 @@ package net.minecraft.entity;
@@ -8288,7 +8285,7 @@ index 6b59121..cdf03c7 100644
  
      /**
 diff --git a/src/net/minecraft/entity/Entity.java b/src/net/minecraft/entity/Entity.java
-index 7397345..0e5ae74 100644
+index 7865119..7474634 100644
 --- a/src/net/minecraft/entity/Entity.java
 +++ b/src/net/minecraft/entity/Entity.java
 @@ -5,6 +5,7 @@ import java.util.List;
@@ -8381,7 +8378,7 @@ index 7397345..0e5ae74 100644
 @@ -2083,9 +2110,15 @@ public abstract class Entity implements ICommandSender
       */
      public void setVelocity(double x, double y, double z)
- 	{
+     {
 -        this.motionX = x;
 -        this.motionY = y;
 -        this.motionZ = z;
@@ -8394,7 +8391,7 @@ index 7397345..0e5ae74 100644
 +		this.motionX = x * strength;
 +		this.motionY = y * strength;
 +		this.motionZ = z * strength;
- 	}
+     }
  
      public void handleHealthUpdate(byte p_70103_1_) {}
 @@ -2170,7 +2203,7 @@ public abstract class Entity implements ICommandSender
@@ -8407,7 +8404,7 @@ index 7397345..0e5ae74 100644
  
      public void setInvisible(boolean invisible)
 diff --git a/src/net/minecraft/entity/EntityLivingBase.java b/src/net/minecraft/entity/EntityLivingBase.java
-index c6f8843..55e4e1f 100644
+index 80f1f20..55e4e1f 100644
 --- a/src/net/minecraft/entity/EntityLivingBase.java
 +++ b/src/net/minecraft/entity/EntityLivingBase.java
 @@ -1,12 +1,18 @@
@@ -8468,7 +8465,7 @@ index c6f8843..55e4e1f 100644
                  var5 = 0.8F;
                  var6 = 0.02F;
 diff --git a/src/net/minecraft/entity/EntityTracker.java b/src/net/minecraft/entity/EntityTracker.java
-index e86485f..f2ac739 100644
+index 14079cc..f2ac739 100644
 --- a/src/net/minecraft/entity/EntityTracker.java
 +++ b/src/net/minecraft/entity/EntityTracker.java
 @@ -2,10 +2,12 @@ package net.minecraft.entity;
@@ -8493,7 +8490,7 @@ index e86485f..f2ac739 100644
  import org.apache.logging.log4j.Logger;
  
 diff --git a/src/net/minecraft/entity/boss/EntityDragon.java b/src/net/minecraft/entity/boss/EntityDragon.java
-index 21f4488..1c2a9bc 100644
+index d971033..1c2a9bc 100644
 --- a/src/net/minecraft/entity/boss/EntityDragon.java
 +++ b/src/net/minecraft/entity/boss/EntityDragon.java
 @@ -478,7 +478,7 @@ public class EntityDragon extends EntityLiving implements IBossDisplayData, IEnt
@@ -8506,7 +8503,7 @@ index 21f4488..1c2a9bc 100644
                  var2.remove();
              }
 diff --git a/src/net/minecraft/entity/item/EntityArmorStand.java b/src/net/minecraft/entity/item/EntityArmorStand.java
-index dbc77e3..01f5b73 100644
+index 98a6280..01f5b73 100644
 --- a/src/net/minecraft/entity/item/EntityArmorStand.java
 +++ b/src/net/minecraft/entity/item/EntityArmorStand.java
 @@ -350,7 +350,7 @@ public class EntityArmorStand extends EntityLivingBase
@@ -8519,7 +8516,7 @@ index dbc77e3..01f5b73 100644
              byte var3 = 0;
              ItemStack var4 = p_174825_1_.getCurrentEquippedItem();
 diff --git a/src/net/minecraft/entity/item/EntityMinecartContainer.java b/src/net/minecraft/entity/item/EntityMinecartContainer.java
-index 988ba9a..f9838fe 100644
+index fdb372b..f9838fe 100644
 --- a/src/net/minecraft/entity/item/EntityMinecartContainer.java
 +++ b/src/net/minecraft/entity/item/EntityMinecartContainer.java
 @@ -212,7 +212,7 @@ public abstract class EntityMinecartContainer extends EntityMinecart implements
@@ -8532,7 +8529,7 @@ index 988ba9a..f9838fe 100644
                  this.minecartContainerItems[var5] = ItemStack.loadItemStackFromNBT(var4);
              }
 diff --git a/src/net/minecraft/entity/item/EntityXPOrb.java b/src/net/minecraft/entity/item/EntityXPOrb.java
-index 9f8f79c..384c556 100644
+index 86b170d..384c556 100644
 --- a/src/net/minecraft/entity/item/EntityXPOrb.java
 +++ b/src/net/minecraft/entity/item/EntityXPOrb.java
 @@ -117,7 +117,7 @@ public class EntityXPOrb extends Entity
@@ -8545,7 +8542,7 @@ index 9f8f79c..384c556 100644
              this.closestPlayer = null;
          }
 diff --git a/src/net/minecraft/entity/passive/EntityWolf.java b/src/net/minecraft/entity/passive/EntityWolf.java
-index 56e2ce1..9026ae0 100644
+index b1345a2..9026ae0 100644
 --- a/src/net/minecraft/entity/passive/EntityWolf.java
 +++ b/src/net/minecraft/entity/passive/EntityWolf.java
 @@ -251,7 +251,7 @@ public class EntityWolf extends EntityTameable
@@ -8558,7 +8555,7 @@ index 56e2ce1..9026ae0 100644
              if (this.timeWolfIsShaking == 0.0F)
              {
 diff --git a/src/net/minecraft/entity/player/EntityPlayer.java b/src/net/minecraft/entity/player/EntityPlayer.java
-index 8a0a656..4786f5f 100644
+index 04f22d7..4786f5f 100644
 --- a/src/net/minecraft/entity/player/EntityPlayer.java
 +++ b/src/net/minecraft/entity/player/EntityPlayer.java
 @@ -1,17 +1,19 @@
@@ -8698,7 +8695,7 @@ index 8a0a656..4786f5f 100644
  
      public boolean func_175146_a(LockCode p_175146_1_)
 diff --git a/src/net/minecraft/entity/player/EntityPlayerMP.java b/src/net/minecraft/entity/player/EntityPlayerMP.java
-index edb94d6..2fa3fe1 100644
+index 385fbff..2fa3fe1 100644
 --- a/src/net/minecraft/entity/player/EntityPlayerMP.java
 +++ b/src/net/minecraft/entity/player/EntityPlayerMP.java
 @@ -3,13 +3,16 @@ package net.minecraft.entity.player;
@@ -8763,7 +8760,7 @@ index edb94d6..2fa3fe1 100644
              this.func_175133_bi();
              this.setInvisible(true);
 diff --git a/src/net/minecraft/entity/player/InventoryPlayer.java b/src/net/minecraft/entity/player/InventoryPlayer.java
-index 691d6f6..68212ad 100644
+index 634f3d1..68212ad 100644
 --- a/src/net/minecraft/entity/player/InventoryPlayer.java
 +++ b/src/net/minecraft/entity/player/InventoryPlayer.java
 @@ -1,6 +1,7 @@
@@ -8784,7 +8781,7 @@ index 691d6f6..68212ad 100644
                      this.mainInventory[var4] = var5;
                  }
 diff --git a/src/net/minecraft/entity/projectile/EntityArrow.java b/src/net/minecraft/entity/projectile/EntityArrow.java
-index ff39a27..c4f6225 100644
+index ddf5514..c4f6225 100644
 --- a/src/net/minecraft/entity/projectile/EntityArrow.java
 +++ b/src/net/minecraft/entity/projectile/EntityArrow.java
 @@ -372,7 +372,7 @@ public class EntityArrow extends Entity implements IProjectile
@@ -8797,7 +8794,7 @@ index ff39a27..c4f6225 100644
                      this.field_145792_e = var23.getY();
                      this.field_145789_f = var23.getZ();
 diff --git a/src/net/minecraft/entity/projectile/EntitySmallFireball.java b/src/net/minecraft/entity/projectile/EntitySmallFireball.java
-index 55181ad..6238f18 100644
+index 6c3a861..6238f18 100644
 --- a/src/net/minecraft/entity/projectile/EntitySmallFireball.java
 +++ b/src/net/minecraft/entity/projectile/EntitySmallFireball.java
 @@ -64,7 +64,7 @@ public class EntitySmallFireball extends EntityFireball
@@ -8810,7 +8807,7 @@ index 55181ad..6238f18 100644
                      if (this.worldObj.isAirBlock(var3))
                      {
 diff --git a/src/net/minecraft/entity/projectile/EntityThrowable.java b/src/net/minecraft/entity/projectile/EntityThrowable.java
-index 3286135..dfb2f6c 100644
+index d2dea91..dfb2f6c 100644
 --- a/src/net/minecraft/entity/projectile/EntityThrowable.java
 +++ b/src/net/minecraft/entity/projectile/EntityThrowable.java
 @@ -218,7 +218,7 @@ public abstract class EntityThrowable extends Entity implements IProjectile
@@ -8823,7 +8820,7 @@ index 3286135..dfb2f6c 100644
                  this.setInPortal();
              }
 diff --git a/src/net/minecraft/inventory/ContainerPlayer.java b/src/net/minecraft/inventory/ContainerPlayer.java
-index f990268..f6f4c15 100644
+index 8b598cc..f6f4c15 100644
 --- a/src/net/minecraft/inventory/ContainerPlayer.java
 +++ b/src/net/minecraft/inventory/ContainerPlayer.java
 @@ -50,7 +50,7 @@ public class ContainerPlayer extends Container
@@ -8836,7 +8833,7 @@ index f990268..f6f4c15 100644
                      return ItemArmor.EMPTY_SLOT_NAMES[var44];
                  }
 diff --git a/src/net/minecraft/inventory/InventoryEnderChest.java b/src/net/minecraft/inventory/InventoryEnderChest.java
-index ed02f22..664ccd7 100644
+index 3eb0d41..664ccd7 100644
 --- a/src/net/minecraft/inventory/InventoryEnderChest.java
 +++ b/src/net/minecraft/inventory/InventoryEnderChest.java
 @@ -35,7 +35,7 @@ public class InventoryEnderChest extends InventoryBasic
@@ -8849,7 +8846,7 @@ index ed02f22..664ccd7 100644
                  this.setInventorySlotContents(var4, ItemStack.loadItemStackFromNBT(var3));
              }
 diff --git a/src/net/minecraft/inventory/Slot.java b/src/net/minecraft/inventory/Slot.java
-index c9a68cf..ce20868 100644
+index 15d5c72..ce20868 100644
 --- a/src/net/minecraft/inventory/Slot.java
 +++ b/src/net/minecraft/inventory/Slot.java
 @@ -119,7 +119,12 @@ public class Slot
@@ -8867,7 +8864,7 @@ index c9a68cf..ce20868 100644
          return null;
      }
 diff --git a/src/net/minecraft/item/ItemBoat.java b/src/net/minecraft/item/ItemBoat.java
-index fc9d038..f4246d2 100644
+index 5d85765..f4246d2 100644
 --- a/src/net/minecraft/item/ItemBoat.java
 +++ b/src/net/minecraft/item/ItemBoat.java
 @@ -81,7 +81,7 @@ public class ItemBoat extends Item
@@ -8880,7 +8877,7 @@ index fc9d038..f4246d2 100644
                      if (worldIn.getBlockState(var33).getBlock() == Blocks.snow_layer)
                      {
 diff --git a/src/net/minecraft/item/ItemBucket.java b/src/net/minecraft/item/ItemBucket.java
-index c354da4..33b7bfa 100644
+index 37b6e24..33b7bfa 100644
 --- a/src/net/minecraft/item/ItemBucket.java
 +++ b/src/net/minecraft/item/ItemBucket.java
 @@ -43,7 +43,7 @@ public class ItemBucket extends Item
@@ -8914,7 +8911,7 @@ index c354da4..33b7bfa 100644
                          return itemStackIn;
                      }
 diff --git a/src/net/minecraft/item/ItemEnderEye.java b/src/net/minecraft/item/ItemEnderEye.java
-index 72f64fc..498cbbb 100644
+index d0d15c1..498cbbb 100644
 --- a/src/net/minecraft/item/ItemEnderEye.java
 +++ b/src/net/minecraft/item/ItemEnderEye.java
 @@ -153,7 +153,7 @@ public class ItemEnderEye extends Item
@@ -8927,7 +8924,7 @@ index 72f64fc..498cbbb 100644
              return itemStackIn;
          }
 diff --git a/src/net/minecraft/item/ItemGlassBottle.java b/src/net/minecraft/item/ItemGlassBottle.java
-index 03aaa1f..37f4cd5 100644
+index 482de16..37f4cd5 100644
 --- a/src/net/minecraft/item/ItemGlassBottle.java
 +++ b/src/net/minecraft/item/ItemGlassBottle.java
 @@ -33,14 +33,14 @@ public class ItemGlassBottle extends Item
@@ -8948,7 +8945,7 @@ index 03aaa1f..37f4cd5 100644
                      return itemStackIn;
                  }
 diff --git a/src/net/minecraft/item/ItemLilyPad.java b/src/net/minecraft/item/ItemLilyPad.java
-index 44467ae..70ad223 100644
+index 8fdbbed..70ad223 100644
 --- a/src/net/minecraft/item/ItemLilyPad.java
 +++ b/src/net/minecraft/item/ItemLilyPad.java
 @@ -35,14 +35,14 @@ public class ItemLilyPad extends ItemColored
@@ -8969,7 +8966,7 @@ index 44467ae..70ad223 100644
                      return itemStackIn;
                  }
 diff --git a/src/net/minecraft/item/ItemMonsterPlacer.java b/src/net/minecraft/item/ItemMonsterPlacer.java
-index bb47501..cbe31be 100644
+index dfc0be8..cbe31be 100644
 --- a/src/net/minecraft/item/ItemMonsterPlacer.java
 +++ b/src/net/minecraft/item/ItemMonsterPlacer.java
 @@ -141,14 +141,14 @@ public class ItemMonsterPlacer extends Item
@@ -8990,7 +8987,7 @@ index bb47501..cbe31be 100644
                          return itemStackIn;
                      }
 diff --git a/src/net/minecraft/nbt/CompressedStreamTools.java b/src/net/minecraft/nbt/CompressedStreamTools.java
-index f82a045..8169124 100644
+index 94da7fe..8169124 100644
 --- a/src/net/minecraft/nbt/CompressedStreamTools.java
 +++ b/src/net/minecraft/nbt/CompressedStreamTools.java
 @@ -14,6 +14,7 @@ import java.io.InputStream;
@@ -9002,7 +8999,7 @@ index f82a045..8169124 100644
  import net.minecraft.crash.CrashReportCategory;
  import net.minecraft.util.ReportedException;
 diff --git a/src/net/minecraft/nbt/NBTTagCompound.java b/src/net/minecraft/nbt/NBTTagCompound.java
-index b5f305a..1cdd1ef 100644
+index 6fcada4..1cdd1ef 100644
 --- a/src/net/minecraft/nbt/NBTTagCompound.java
 +++ b/src/net/minecraft/nbt/NBTTagCompound.java
 @@ -1,6 +1,7 @@
@@ -9026,7 +9023,7 @@ index b5f305a..1cdd1ef 100644
  import org.apache.logging.log4j.Logger;
  
 diff --git a/src/net/minecraft/network/NetHandlerPlayServer.java b/src/net/minecraft/network/NetHandlerPlayServer.java
-index 38b9ecd..65aa056 100644
+index 3301ef8..65aa056 100644
 --- a/src/net/minecraft/network/NetHandlerPlayServer.java
 +++ b/src/net/minecraft/network/NetHandlerPlayServer.java
 @@ -2,9 +2,11 @@ package net.minecraft.network;
@@ -9120,7 +9117,7 @@ index 38b9ecd..65aa056 100644
              this.playerEntity.openContainer.setCanCraft(this.playerEntity, true);
          }
 diff --git a/src/net/minecraft/network/NetworkManager.java b/src/net/minecraft/network/NetworkManager.java
-index f05dadf..da1b8d0 100644
+index ee166ff..da1b8d0 100644
 --- a/src/net/minecraft/network/NetworkManager.java
 +++ b/src/net/minecraft/network/NetworkManager.java
 @@ -1,17 +1,7 @@
@@ -9746,7 +9743,7 @@ index f05dadf..da1b8d0 100644
      }
  }
 diff --git a/src/net/minecraft/network/NetworkSystem.java b/src/net/minecraft/network/NetworkSystem.java
-index f713c5d..3ac4a53 100644
+index 93defcf..3ac4a53 100644
 --- a/src/net/minecraft/network/NetworkSystem.java
 +++ b/src/net/minecraft/network/NetworkSystem.java
 @@ -2,6 +2,7 @@ package net.minecraft.network;
@@ -9786,7 +9783,7 @@ index f713c5d..3ac4a53 100644
  import org.apache.logging.log4j.Logger;
  
 diff --git a/src/net/minecraft/network/PacketBuffer.java b/src/net/minecraft/network/PacketBuffer.java
-index c9f2a49..8dcd696 100644
+index c695f6f..8dcd696 100644
 --- a/src/net/minecraft/network/PacketBuffer.java
 +++ b/src/net/minecraft/network/PacketBuffer.java
 @@ -1,6 +1,5 @@
@@ -9823,7 +9820,7 @@ index c9f2a49..8dcd696 100644
  {
      private final ByteBuf buf;
 diff --git a/src/net/minecraft/potion/PotionEffect.java b/src/net/minecraft/potion/PotionEffect.java
-index 1a7fd07..c7f63ef 100644
+index 9853f33..c7f63ef 100644
 --- a/src/net/minecraft/potion/PotionEffect.java
 +++ b/src/net/minecraft/potion/PotionEffect.java
 @@ -1,10 +1,16 @@
@@ -9857,7 +9854,7 @@ index 1a7fd07..c7f63ef 100644
  
      public void performEffect(EntityLivingBase entityIn)
 diff --git a/src/net/minecraft/realms/RealmsConnect.java b/src/net/minecraft/realms/RealmsConnect.java
-index 1702bc1..2ef52bc 100644
+index 1555ba3..2ef52bc 100644
 --- a/src/net/minecraft/realms/RealmsConnect.java
 +++ b/src/net/minecraft/realms/RealmsConnect.java
 @@ -2,6 +2,7 @@ package net.minecraft.realms;
@@ -9877,7 +9874,7 @@ index 1702bc1..2ef52bc 100644
  import org.apache.logging.log4j.Logger;
  
 diff --git a/src/net/minecraft/realms/RealmsScreen.java b/src/net/minecraft/realms/RealmsScreen.java
-index 62e3405..3971089 100644
+index d3ae7ea..3971089 100644
 --- a/src/net/minecraft/realms/RealmsScreen.java
 +++ b/src/net/minecraft/realms/RealmsScreen.java
 @@ -112,7 +112,7 @@ public class RealmsScreen
@@ -9890,7 +9887,7 @@ index 62e3405..3971089 100644
  
          AbstractClientPlayer.getDownloadImageSkin(var2, p_bindFace_1_);
 diff --git a/src/net/minecraft/realms/RealmsServerStatusPinger.java b/src/net/minecraft/realms/RealmsServerStatusPinger.java
-index d3363ff..77e2f08 100644
+index d176957..77e2f08 100644
 --- a/src/net/minecraft/realms/RealmsServerStatusPinger.java
 +++ b/src/net/minecraft/realms/RealmsServerStatusPinger.java
 @@ -1,11 +1,13 @@
@@ -9916,7 +9913,7 @@ index d3363ff..77e2f08 100644
  import org.apache.logging.log4j.Logger;
  
 diff --git a/src/net/minecraft/realms/Tezzelator.java b/src/net/minecraft/realms/Tezzelator.java
-index a2b17d6..11cec5a 100644
+index 6743440..11cec5a 100644
 --- a/src/net/minecraft/realms/Tezzelator.java
 +++ b/src/net/minecraft/realms/Tezzelator.java
 @@ -21,12 +21,12 @@ public class Tezzelator
@@ -9976,7 +9973,7 @@ index a2b17d6..11cec5a 100644
      }
  }
 diff --git a/src/net/minecraft/scoreboard/Scoreboard.java b/src/net/minecraft/scoreboard/Scoreboard.java
-index 0ccc928..e292906 100644
+index 0172d14..e292906 100644
 --- a/src/net/minecraft/scoreboard/Scoreboard.java
 +++ b/src/net/minecraft/scoreboard/Scoreboard.java
 @@ -456,7 +456,7 @@ public class Scoreboard
@@ -9989,7 +9986,7 @@ index 0ccc928..e292906 100644
          if (field_178823_g == null)
          {
 diff --git a/src/net/minecraft/server/MinecraftServer.java b/src/net/minecraft/server/MinecraftServer.java
-index f1e3bf8..c095dad 100644
+index 50c5920..c095dad 100644
 --- a/src/net/minecraft/server/MinecraftServer.java
 +++ b/src/net/minecraft/server/MinecraftServer.java
 @@ -10,10 +10,12 @@ import com.mojang.authlib.GameProfile;
@@ -10024,7 +10021,7 @@ index f1e3bf8..c095dad 100644
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
 diff --git a/src/net/minecraft/server/integrated/IntegratedServer.java b/src/net/minecraft/server/integrated/IntegratedServer.java
-index cf310a1..f79805f 100644
+index 4dd53d1..f79805f 100644
 --- a/src/net/minecraft/server/integrated/IntegratedServer.java
 +++ b/src/net/minecraft/server/integrated/IntegratedServer.java
 @@ -2,6 +2,7 @@ package net.minecraft.server.integrated;
@@ -10052,7 +10049,7 @@ index cf310a1..f79805f 100644
  import org.apache.logging.log4j.Logger;
  
 diff --git a/src/net/minecraft/server/management/BanEntry.java b/src/net/minecraft/server/management/BanEntry.java
-index 737d827..1238292 100644
+index ef94be8..1238292 100644
 --- a/src/net/minecraft/server/management/BanEntry.java
 +++ b/src/net/minecraft/server/management/BanEntry.java
 @@ -7,7 +7,7 @@ import java.util.Date;
@@ -10111,7 +10108,7 @@ index 737d827..1238292 100644
      }
  }
 diff --git a/src/net/minecraft/server/management/ItemInWorldManager.java b/src/net/minecraft/server/management/ItemInWorldManager.java
-index ccd475a..eb3b4c4 100644
+index 50c82ce..eb3b4c4 100644
 --- a/src/net/minecraft/server/management/ItemInWorldManager.java
 +++ b/src/net/minecraft/server/management/ItemInWorldManager.java
 @@ -341,7 +341,7 @@ public class ItemInWorldManager
@@ -10124,7 +10121,7 @@ index ccd475a..eb3b4c4 100644
                  return false;
              }
 diff --git a/src/net/minecraft/server/management/LowerStringMap.java b/src/net/minecraft/server/management/LowerStringMap.java
-index 7a6a859..fb1628e 100644
+index ad3e8b6..fb1628e 100644
 --- a/src/net/minecraft/server/management/LowerStringMap.java
 +++ b/src/net/minecraft/server/management/LowerStringMap.java
 @@ -1,11 +1,11 @@
@@ -10142,7 +10139,7 @@ index 7a6a859..fb1628e 100644
  public class LowerStringMap implements Map
  {
 diff --git a/src/net/minecraft/server/management/PlayerProfileCache.java b/src/net/minecraft/server/management/PlayerProfileCache.java
-index 9154c32..1b805fd 100644
+index f2e269d..1b805fd 100644
 --- a/src/net/minecraft/server/management/PlayerProfileCache.java
 +++ b/src/net/minecraft/server/management/PlayerProfileCache.java
 @@ -40,7 +40,7 @@ import org.apache.commons.io.IOUtils;
@@ -10169,7 +10166,7 @@ index 9154c32..1b805fd 100644
          finally
          {
 diff --git a/src/net/minecraft/server/management/ServerConfigurationManager.java b/src/net/minecraft/server/management/ServerConfigurationManager.java
-index a9aff21..201efae 100644
+index 156b1aa..201efae 100644
 --- a/src/net/minecraft/server/management/ServerConfigurationManager.java
 +++ b/src/net/minecraft/server/management/ServerConfigurationManager.java
 @@ -4,7 +4,9 @@ import com.google.common.collect.Lists;
@@ -10227,7 +10224,7 @@ index a9aff21..201efae 100644
  
              return var4;
 diff --git a/src/net/minecraft/server/network/NetHandlerLoginServer.java b/src/net/minecraft/server/network/NetHandlerLoginServer.java
-index 5169593..a0998eb 100644
+index 409902e..a0998eb 100644
 --- a/src/net/minecraft/server/network/NetHandlerLoginServer.java
 +++ b/src/net/minecraft/server/network/NetHandlerLoginServer.java
 @@ -1,19 +1,18 @@
@@ -10270,7 +10267,7 @@ index 5169593..a0998eb 100644
  {
      private static final AtomicInteger AUTHENTICATOR_THREAD_ID = new AtomicInteger(0);
 diff --git a/src/net/minecraft/tileentity/TileEntityChest.java b/src/net/minecraft/tileentity/TileEntityChest.java
-index 7b1a14c..083b66e 100644
+index 1ad9b03..083b66e 100644
 --- a/src/net/minecraft/tileentity/TileEntityChest.java
 +++ b/src/net/minecraft/tileentity/TileEntityChest.java
 @@ -184,7 +184,7 @@ public class TileEntityChest extends TileEntityLockable implements IUpdatePlayer
@@ -10301,7 +10298,7 @@ index 7b1a14c..083b66e 100644
              --this.numPlayersUsing;
              this.worldObj.addBlockEvent(this.pos, this.getBlockType(), 1, this.numPlayersUsing);
 diff --git a/src/net/minecraft/tileentity/TileEntityDispenser.java b/src/net/minecraft/tileentity/TileEntityDispenser.java
-index e2cf3fc..fffbd29 100644
+index c368080..fffbd29 100644
 --- a/src/net/minecraft/tileentity/TileEntityDispenser.java
 +++ b/src/net/minecraft/tileentity/TileEntityDispenser.java
 @@ -164,7 +164,7 @@ public class TileEntityDispenser extends TileEntityLockable implements IInventor
@@ -10314,7 +10311,7 @@ index e2cf3fc..fffbd29 100644
                  this.field_146022_i[var5] = ItemStack.loadItemStackFromNBT(var4);
              }
 diff --git a/src/net/minecraft/tileentity/TileEntitySign.java b/src/net/minecraft/tileentity/TileEntitySign.java
-index cf74f0e..8098aae 100644
+index 3d886a9..8098aae 100644
 --- a/src/net/minecraft/tileentity/TileEntitySign.java
 +++ b/src/net/minecraft/tileentity/TileEntitySign.java
 @@ -21,7 +21,8 @@ import net.minecraft.world.World;
@@ -10328,7 +10325,7 @@ index cf74f0e..8098aae 100644
      /**
       * The index of the line currently being edited. Only used on client side, but defined on both. Note this is only
 diff --git a/src/net/minecraft/util/BlockPos.java b/src/net/minecraft/util/BlockPos.java
-index b856a09..c5ab1d7 100644
+index 08917bc..c5ab1d7 100644
 --- a/src/net/minecraft/util/BlockPos.java
 +++ b/src/net/minecraft/util/BlockPos.java
 @@ -43,6 +43,14 @@ public class BlockPos extends Vec3i
@@ -10347,7 +10344,7 @@ index b856a09..c5ab1d7 100644
       * Add the given coordinates to the coordinates of this BlockPos
       *  
 diff --git a/src/net/minecraft/util/ChatComponentStyle.java b/src/net/minecraft/util/ChatComponentStyle.java
-index 0fd2665..5eb0b26 100644
+index 6ae2b24..5eb0b26 100644
 --- a/src/net/minecraft/util/ChatComponentStyle.java
 +++ b/src/net/minecraft/util/ChatComponentStyle.java
 @@ -3,6 +3,8 @@ package net.minecraft.util;
@@ -10380,7 +10377,7 @@ index 0fd2665..5eb0b26 100644
          return var1.toString();
      }
 diff --git a/src/net/minecraft/util/CryptManager.java b/src/net/minecraft/util/CryptManager.java
-index 0a87cd0..682ea08 100644
+index 341db02..682ea08 100644
 --- a/src/net/minecraft/util/CryptManager.java
 +++ b/src/net/minecraft/util/CryptManager.java
 @@ -68,11 +68,11 @@ public class CryptManager
@@ -10479,7 +10476,7 @@ index 0a87cd0..682ea08 100644
          }
          catch (GeneralSecurityException var3)
 diff --git a/src/net/minecraft/util/JsonSerializableSet.java b/src/net/minecraft/util/JsonSerializableSet.java
-index a85bf86..ff92966 100644
+index 30d032b..ff92966 100644
 --- a/src/net/minecraft/util/JsonSerializableSet.java
 +++ b/src/net/minecraft/util/JsonSerializableSet.java
 @@ -1,13 +1,13 @@
@@ -10500,7 +10497,7 @@ index a85bf86..ff92966 100644
  public class JsonSerializableSet extends ForwardingSet implements IJsonSerializable
  {
 diff --git a/src/net/minecraft/util/MessageDeserializer.java b/src/net/minecraft/util/MessageDeserializer.java
-index f18aa09..3572e3a 100644
+index d3e10b2..3572e3a 100644
 --- a/src/net/minecraft/util/MessageDeserializer.java
 +++ b/src/net/minecraft/util/MessageDeserializer.java
 @@ -3,13 +3,16 @@ package net.minecraft.util;
@@ -10521,7 +10518,7 @@ index f18aa09..3572e3a 100644
  import org.apache.logging.log4j.Logger;
  import org.apache.logging.log4j.Marker;
 diff --git a/src/net/minecraft/util/MessageDeserializer2.java b/src/net/minecraft/util/MessageDeserializer2.java
-index 8846c7a..50661c6 100644
+index 9dd4aff..50661c6 100644
 --- a/src/net/minecraft/util/MessageDeserializer2.java
 +++ b/src/net/minecraft/util/MessageDeserializer2.java
 @@ -35,13 +35,13 @@ public class MessageDeserializer2 extends ByteToMessageDecoder
@@ -10542,7 +10539,7 @@ index 8846c7a..50661c6 100644
                  finally
                  {
 diff --git a/src/net/minecraft/util/MessageSerializer.java b/src/net/minecraft/util/MessageSerializer.java
-index a8d891b..119b922 100644
+index 97a71eb..119b922 100644
 --- a/src/net/minecraft/util/MessageSerializer.java
 +++ b/src/net/minecraft/util/MessageSerializer.java
 @@ -3,13 +3,16 @@ package net.minecraft.util;
@@ -10573,7 +10570,7 @@ index a8d891b..119b922 100644
  
                  p_encode_2_.writePacketData(var5);
 diff --git a/src/net/minecraft/util/MovingObjectPosition.java b/src/net/minecraft/util/MovingObjectPosition.java
-index a682077..e0bf505 100644
+index fd7a472..e0bf505 100644
 --- a/src/net/minecraft/util/MovingObjectPosition.java
 +++ b/src/net/minecraft/util/MovingObjectPosition.java
 @@ -4,11 +4,11 @@ import net.minecraft.entity.Entity;
@@ -10626,7 +10623,7 @@ index a682077..e0bf505 100644
  
      public static enum MovingObjectType
 diff --git a/src/net/minecraft/util/ScreenShotHelper.java b/src/net/minecraft/util/ScreenShotHelper.java
-index 1ef5de2..beba6b8 100644
+index 8169170..beba6b8 100644
 --- a/src/net/minecraft/util/ScreenShotHelper.java
 +++ b/src/net/minecraft/util/ScreenShotHelper.java
 @@ -135,7 +135,11 @@ public class ScreenShotHelper
@@ -10643,7 +10640,7 @@ index 1ef5de2..beba6b8 100644
  
          while (true)
 diff --git a/src/net/minecraft/util/Timer.java b/src/net/minecraft/util/Timer.java
-index 7d59775..c956127 100644
+index 7ec66f4..c956127 100644
 --- a/src/net/minecraft/util/Timer.java
 +++ b/src/net/minecraft/util/Timer.java
 @@ -1,6 +1,8 @@
@@ -10667,7 +10664,7 @@ index 7d59775..c956127 100644
          long var3 = var1 - this.lastSyncSysClock;
          long var5 = System.nanoTime() / 1000000L;
 diff --git a/src/net/minecraft/util/Vec3i.java b/src/net/minecraft/util/Vec3i.java
-index 024a877..6138e61 100644
+index 2035ffa..6138e61 100644
 --- a/src/net/minecraft/util/Vec3i.java
 +++ b/src/net/minecraft/util/Vec3i.java
 @@ -8,13 +8,13 @@ public class Vec3i implements Comparable
@@ -10688,7 +10685,7 @@ index 024a877..6138e61 100644
  
      public Vec3i(int p_i46007_1_, int p_i46007_2_, int p_i46007_3_)
 diff --git a/src/net/minecraft/village/VillageSiege.java b/src/net/minecraft/village/VillageSiege.java
-index 45f7cde..fba9f60 100644
+index f1a01ba..fba9f60 100644
 --- a/src/net/minecraft/village/VillageSiege.java
 +++ b/src/net/minecraft/village/VillageSiege.java
 @@ -104,7 +104,7 @@ public class VillageSiege
@@ -10701,7 +10698,7 @@ index 45f7cde..fba9f60 100644
                  this.theVillage = this.worldObj.getVillageCollection().func_176056_a(new BlockPos(var3), 1);
  
 diff --git a/src/net/minecraft/world/SpawnerAnimals.java b/src/net/minecraft/world/SpawnerAnimals.java
-index 9cd6216..9cfcc6b 100644
+index f5d6fdc..9cfcc6b 100644
 --- a/src/net/minecraft/world/SpawnerAnimals.java
 +++ b/src/net/minecraft/world/SpawnerAnimals.java
 @@ -1,10 +1,12 @@
@@ -10748,7 +10745,7 @@ index 9cd6216..9cfcc6b 100644
          }
      }
 diff --git a/src/net/minecraft/world/World.java b/src/net/minecraft/world/World.java
-index fa8c3f0..12faa30 100644
+index 18e9ecf..12faa30 100644
 --- a/src/net/minecraft/world/World.java
 +++ b/src/net/minecraft/world/World.java
 @@ -3,6 +3,7 @@ package net.minecraft.world;
@@ -10823,7 +10820,7 @@ index fa8c3f0..12faa30 100644
          {
              var2.addCrashSectionThrowable("Level Data Unobtainable", var4);
 diff --git a/src/net/minecraft/world/WorldServer.java b/src/net/minecraft/world/WorldServer.java
-index 6dbf889..9db763b 100644
+index f02a23c..9db763b 100644
 --- a/src/net/minecraft/world/WorldServer.java
 +++ b/src/net/minecraft/world/WorldServer.java
 @@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
@@ -10869,7 +10866,7 @@ index 6dbf889..9db763b 100644
              return false;
          }
 diff --git a/src/net/minecraft/world/biome/WorldChunkManager.java b/src/net/minecraft/world/biome/WorldChunkManager.java
-index 1b5f683..0e962a9 100644
+index 366413e..0e962a9 100644
 --- a/src/net/minecraft/world/biome/WorldChunkManager.java
 +++ b/src/net/minecraft/world/biome/WorldChunkManager.java
 @@ -1,8 +1,10 @@
@@ -10884,7 +10881,7 @@ index 1b5f683..0e962a9 100644
  import net.minecraft.crash.CrashReportCategory;
  import net.minecraft.util.BlockPos;
 diff --git a/src/net/minecraft/world/chunk/Chunk.java b/src/net/minecraft/world/chunk/Chunk.java
-index fb26ace..68c73f0 100644
+index 4b4d8b9..68c73f0 100644
 --- a/src/net/minecraft/world/chunk/Chunk.java
 +++ b/src/net/minecraft/world/chunk/Chunk.java
 @@ -3,6 +3,7 @@ package net.minecraft.world.chunk;
@@ -10912,7 +10909,7 @@ index fb26ace..68c73f0 100644
  import org.apache.logging.log4j.Logger;
  
 diff --git a/src/net/minecraft/world/chunk/storage/AnvilChunkLoader.java b/src/net/minecraft/world/chunk/storage/AnvilChunkLoader.java
-index 79ce940..f5c3af7 100644
+index 6c89eb3..f5c3af7 100644
 --- a/src/net/minecraft/world/chunk/storage/AnvilChunkLoader.java
 +++ b/src/net/minecraft/world/chunk/storage/AnvilChunkLoader.java
 @@ -176,8 +176,6 @@ public class AnvilChunkLoader implements IChunkLoader, IThreadedFileIO
@@ -10933,7 +10930,7 @@ index 79ce940..f5c3af7 100644
          return true;
      }
 diff --git a/src/net/minecraft/world/chunk/storage/RegionFile.java b/src/net/minecraft/world/chunk/storage/RegionFile.java
-index 65c7029..9efafc4 100644
+index e4e41df..9efafc4 100644
 --- a/src/net/minecraft/world/chunk/storage/RegionFile.java
 +++ b/src/net/minecraft/world/chunk/storage/RegionFile.java
 @@ -1,6 +1,7 @@
@@ -10962,7 +10959,7 @@ index 65c7029..9efafc4 100644
      {
          return this.outOfBounds(p_76710_1_, p_76710_2_) ? null : new DataOutputStream(new DeflaterOutputStream(new RegionFile.ChunkBuffer(p_76710_1_, p_76710_2_)));
 diff --git a/src/net/minecraft/world/gen/ChunkProviderEnd.java b/src/net/minecraft/world/gen/ChunkProviderEnd.java
-index 237f88e..2401400 100644
+index f82ecc3..2401400 100644
 --- a/src/net/minecraft/world/gen/ChunkProviderEnd.java
 +++ b/src/net/minecraft/world/gen/ChunkProviderEnd.java
 @@ -146,15 +146,8 @@ public class ChunkProviderEnd implements IChunkProvider
@@ -10982,7 +10979,7 @@ index 237f88e..2401400 100644
                          {
                              --var5;
 diff --git a/src/net/minecraft/world/gen/ChunkProviderServer.java b/src/net/minecraft/world/gen/ChunkProviderServer.java
-index dd93e4c..be3ace3 100644
+index 5b0fa03..be3ace3 100644
 --- a/src/net/minecraft/world/gen/ChunkProviderServer.java
 +++ b/src/net/minecraft/world/gen/ChunkProviderServer.java
 @@ -1,12 +1,14 @@
@@ -11009,7 +11006,7 @@ index dd93e4c..be3ace3 100644
  import org.apache.logging.log4j.Logger;
  
 diff --git a/src/net/minecraft/world/gen/layer/GenLayer.java b/src/net/minecraft/world/gen/layer/GenLayer.java
-index 39aac4e..186c3bd 100644
+index 1d31674..186c3bd 100644
 --- a/src/net/minecraft/world/gen/layer/GenLayer.java
 +++ b/src/net/minecraft/world/gen/layer/GenLayer.java
 @@ -1,6 +1,7 @@
@@ -11021,7 +11018,7 @@ index 39aac4e..186c3bd 100644
  import net.minecraft.crash.CrashReportCategory;
  import net.minecraft.util.ReportedException;
 diff --git a/src/net/minecraft/world/gen/structure/MapGenStructure.java b/src/net/minecraft/world/gen/structure/MapGenStructure.java
-index 89e46e6..9f3a45e 100644
+index e39a8f2..9f3a45e 100644
 --- a/src/net/minecraft/world/gen/structure/MapGenStructure.java
 +++ b/src/net/minecraft/world/gen/structure/MapGenStructure.java
 @@ -1,11 +1,13 @@
@@ -11039,5 +11036,5 @@ index 89e46e6..9f3a45e 100644
  import net.minecraft.crash.CrashReportCategory;
  import net.minecraft.nbt.NBTBase;
 -- 
-2.0.0
+2.5.0
 
