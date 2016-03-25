@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 - 2016 | Wurst-Imperium | All rights reserved.
+ * Copyright Â© 2014 - 2016 | Wurst-Imperium | All rights reserved.
  * 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -123,6 +123,7 @@ public class ModManager
 	public final ProtectMod protectMod = new ProtectMod();
 	public final RegenMod regenMod = new RegenMod();
 	public final RemoteViewMod remoteViewMod = new RemoteViewMod();
+	public final RecordingModeMod recordingModeMod = new RecordingModeMod();
 	public final SafeWalkMod safeWalkMod = new SafeWalkMod();
 	public final SearchMod searchMod = new SearchMod();
 	public final SkinBlinkerMod skinBlinkerMod = new SkinBlinkerMod();
