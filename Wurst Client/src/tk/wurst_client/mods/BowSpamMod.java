@@ -16,8 +16,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import tk.wurst_client.WurstClient;
 import tk.wurst_client.api.Chat;
-import tk.wurst_client.api.Module;
-import tk.wurst_client.api.ModuleConfiguration;
 import tk.wurst_client.events.listeners.UpdateListener;
 import tk.wurst_client.mods.Mod;
 import tk.wurst_client.mods.Mod.Category;
