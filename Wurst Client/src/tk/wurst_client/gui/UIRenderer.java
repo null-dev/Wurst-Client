@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 - 2016 | Wurst-Imperium | All rights reserved.
+ * Copyright Â© 2014 - 2016 | Wurst-Imperium | All rights reserved.
  * 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -28,6 +28,8 @@ import tk.wurst_client.WurstClient;
 import tk.wurst_client.events.GUIRenderEvent;
 import tk.wurst_client.font.Fonts;
 import tk.wurst_client.mods.Mod;
+
+import tk.wurst_client.mods.RecordingModeMod;
 
 public class UIRenderer
 {
@@ -74,6 +76,9 @@ public class UIRenderer
 	
 	public static void renderUI(float zLevel)
 	{
+		if(RecordingModeMod.hideInGameGUI()) {
+ 			return;
+ 		}
 		// GL settings
 		glEnable(GL_BLEND);
 		glDisable(GL_CULL_FACE);
