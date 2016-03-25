@@ -2,8 +2,6 @@ package tk.wurst_client.mods;
 
 import tk.wurst_client.WurstClient;
 import tk.wurst_client.api.Chat;
-import tk.wurst_client.api.Module;
-import tk.wurst_client.api.ModuleConfiguration;
 
 /**
  * Project: EvenWurse
@@ -14,20 +12,20 @@ import tk.wurst_client.api.ModuleConfiguration;
         description = "Hides Wurst-related GUI elements for recording purposes.",
         category = Mod.Category.RENDER)
 public class RecordingModeMod extends Mod {
-    public boolean hideInGameGUI() {
-        return isActive();
+    public static boolean hideInGameGUI() {
+        return WurstClient.INSTANCE.mods.recordingModeMod.isActive();
     }
 
-    public boolean hideOptionsButton() {
-        return isActive();
+    public static boolean hideOptionsButton() {
+        return WurstClient.INSTANCE.mods.recordingModeMod.isActive();
     }
 
-    public boolean clearChat() {
-        return isActive();
+    public static boolean clearChat() {
+        return WurstClient.INSTANCE.mods.recordingModeMod.isActive();
     }
 
-    public boolean disableWurstMessages() {
-        return isActive();
+    public static boolean disableWurstMessages() {
+        return WurstClient.INSTANCE.mods.recordingModeMod.isActive();
     }
 
     @Override
